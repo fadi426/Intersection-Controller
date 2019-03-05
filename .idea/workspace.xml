@@ -2,18 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="26234c62-86a3-4585-b55c-b998de310236" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/controller/MainController.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/controller/MqttListenerController.java" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/main/java/controller/MqttPublisherController.java" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Launcher.java" afterPath="$PROJECT_DIR$/src/main/java/Launcher.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/MqttController.java" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Launcher.class" afterPath="$PROJECT_DIR$/target/classes/Launcher.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/controller/MqttController.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/classes/model/BrokerPayload.class" afterPath="" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" />
-      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" />
+      <change beforePath="$PROJECT_DIR$/19f69c31-1690-460b-b66e-d04891a98fc5-tcpioteclipseorg1883/.lck" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/b326dcc8-fcc8-4f25-b69a-7d167dbba8ca-tcpioteclipseorg1883/.lck" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
