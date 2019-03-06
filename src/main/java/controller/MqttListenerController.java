@@ -5,11 +5,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MqttListenerController implements MqttCallback {
 
-	private static final String brokerUrl = "tcp://m24.cloudmqtt.com:16898";
+	private static final String brokerUrl = "tcp://broker.0f.nl:1883";
 	private static final String USERNAME = "ebfphetc";
 	private static final String PASSWORD = "YZUvxaLPT5Nw";
 	private static final String clientId = "JavaSample";
-	private static final String topic = "topic";
+	private static final String topic = "8/motor_vehicle/1/light/1";
 
 	public void subscribe() {
 
@@ -18,7 +18,7 @@ public class MqttListenerController implements MqttCallback {
 		try {
 
 			MqttClient sampleClient = new MqttClient(brokerUrl, clientId, persistence);
-			MqttConnectOptions connOpts = setUpConnectionOptions(USERNAME, PASSWORD);
+			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 
 			System.out.println("checking");

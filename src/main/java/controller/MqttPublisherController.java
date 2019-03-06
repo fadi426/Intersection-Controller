@@ -8,21 +8,20 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MqttPublisherController {
 
-	private static final String broker = "tcp://m24.cloudmqtt.com:16898";
+	private static final String broker = "tcp://broker.0f.nl:1883";
 	private static final String USERNAME = "ebfphetc";
 	private static final String PASSWORD = "YZUvxaLPT5Nw";
 	private static final String clientId = "JavaSample";
-	private static final String topic = "topic";
+	private static final String topic = "8/motor_vehicle/1/light/1";
 	private static final int qos = 2;
 
-	public void publish() {
+	public void publish(String content) {
 
-		String content = "hello world";
 		MemoryPersistence persistence = new MemoryPersistence();
 
 		try {
 			MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
-			MqttConnectOptions connOpts = setUpConnectionOptions(USERNAME, PASSWORD);
+			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			System.out.println("Connecting to broker: " + broker);
 			sampleClient.connect(connOpts);
