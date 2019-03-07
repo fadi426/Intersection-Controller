@@ -1,9 +1,9 @@
-import controller.MainController;
-import org.eclipse.paho.client.mqttv3.MqttException;
+import controller.MainFrameController;
 
 public class Launcher {
 
     public static void main(String[] args) {
-        MainController.MainController();
+        MainFrameController mainFrameController = new MainFrameController();
+        mainFrameController.showMainFrameWindow();
     }
 }
