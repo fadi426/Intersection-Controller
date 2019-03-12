@@ -15,6 +15,7 @@ public class MqttController implements MqttCallback {
 //	private static final String topic = "8/motor_vehicle/1/light/1";
 	private static final int qos = 2;
 	private static final MemoryPersistence persistence = new MemoryPersistence();
+	private TrafficSensorController trafficSensorController = new TrafficSensorController();
 	private MqttClient sampleClient = null;
 
 	public void subscribe(String topic) {
@@ -32,7 +33,7 @@ public class MqttController implements MqttCallback {
 
 			System.out.println("Subscribed");
 			System.out.println("Listening");
-			Scheduler(topic);
+			//Scheduler(topic);
 		} catch (MqttException me) {
 			System.out.println("Mqtt reason " + me.getReasonCode());
 			System.out.println("Mqtt msg " + me.getMessage());
