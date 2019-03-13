@@ -17,6 +17,7 @@ public class MqttController implements MqttCallback {
 	private static final MemoryPersistence persistence = new MemoryPersistence();
 	private TrafficSensorController trafficSensorController = new TrafficSensorController();
 	private MqttClient sampleClient = null;
+	private String lastMessage;
 
 	public void subscribe(String topic) {
 		try {
@@ -30,6 +31,8 @@ public class MqttController implements MqttCallback {
 
 			sampleClient.setCallback(this);
 			sampleClient.subscribe(topic);
+
+
 
 			System.out.println("Subscribed");
 			System.out.println("Listening");
@@ -52,10 +55,24 @@ public class MqttController implements MqttCallback {
 
 	}
 
-	public void messageArrived(String topic, MqttMessage message) throws Exception {
+	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
 
 		System.out.println("Mqtt topic : " + topic);
 		System.out.println("Mqtt msg : " + message.toString());
+		lastMessage = message.toString();
+		changeLights();
+	}
+
+	public void changeLights() throws InterruptedException {
+		if (lastMessage.equals("1")) {
+			publishMessage("8/motor_vehicle/1/light/1", "2");
+			Thread.sleep(2000); // 10000ms = 10s
+			publishMessage("8/motor_vehicle/1/light/1", "1");
+			Thread.sleep(1000); // 10000ms = 10s
+			publishMessage("8/motor_vehicle/1/light/1", "0");
+			Thread.sleep(5000); // 10000ms = 10s
+			//traicLightMode = 2;
+		}
 	}
 
 	public void publishMessage(String topic, String content){

@@ -1,5 +1,6 @@
 package controller;
 
+import model.TrafficLight;
 import model.TrafficSensor;
 import sun.management.Sensor;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
 public class TrafficSensorController {
 
     List<TrafficSensor> trafficSensorsList = new ArrayList<TrafficSensor>();
+    List<TrafficLight> trafficLightsList = new ArrayList<TrafficLight>();
 
     public void changeTrafficSensor(int trafficSensorId) {
         Optional<TrafficSensor> trafficSensor = null;
