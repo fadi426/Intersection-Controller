@@ -44,7 +44,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="8/motor_vehicle/1/sensor/1"/>
+          <text value="8/#"/>
         </properties>
       </component>
     </children>
