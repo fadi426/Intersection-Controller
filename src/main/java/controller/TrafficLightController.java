@@ -36,6 +36,11 @@ public class TrafficLightController extends Thread {
                 }
                // counter = listSize;
             }
+            try {
+                Thread.sleep(0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -63,8 +68,8 @@ public class TrafficLightController extends Thread {
                     String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId()  + "/" + "light/" + sensor.getId();
  //                   System.out.println(publishMsg);
                     publishMessage(publishMsg, "0");
-                    Thread.sleep(1000);
-                    //System.out.println("listsize = " + trafficSensorList.size());
+                    Thread.sleep(1500);
+                    System.out.println("listsize = " + trafficSensorList.size());
                     exsist = true;
                     sensorList.set(Integer.parseInt(sensor.getGroupId())-1,sensor.getState());
                 }
