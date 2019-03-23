@@ -6,8 +6,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +14,7 @@ import java.util.regex.Pattern;
 public class TrafficLightController extends Thread {
     private List<String> messageQueue = new ArrayList<>();
     private List<String> topiceQueue = new ArrayList<>();
+    private List<String> sensorList = new ArrayList<>(Arrays.asList("0", "0"));
     private TrafficSensorController trafficSensorController;
     private MqttClient mqttClient;
     private String mainTopic;
@@ -55,21 +55,28 @@ public class TrafficLightController extends Thread {
     public void changeLights(String mainTopic) throws InterruptedException {
 
         List<TrafficSensor> trafficSensorList = trafficSensorController.getTrafficSensorList();
+
+        boolean exsist = false;
         if (trafficSensorList.size() > 0) {
             for (TrafficSensor sensor : trafficSensorList){
-                if (sensor.getState().equals("1")){
+                if (sensor.getState().equals("1") && !sensorList.get(Integer.parseInt(sensor.getGroupId())-1).equals(sensor.getState()) && exsist == false){
                     String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId()  + "/" + "light/" + sensor.getId();
  //                   System.out.println(publishMsg);
                     publishMessage(publishMsg, "0");
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     //System.out.println("listsize = " + trafficSensorList.size());
+                    exsist = true;
+                    sensorList.set(Integer.parseInt(sensor.getGroupId())-1,sensor.getState());
                 }
                 else {
-                    String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId()  + "/" + "light/" + sensor.getId();
-                    publishMessage(publishMsg, "1");
-                    Thread.sleep(500);
-                    publishMessage(publishMsg, "2");
-                    Thread.sleep(500);
+                    if (!sensorList.get(Integer.parseInt(sensor.getGroupId())-1).equals(sensor.getState())) {
+                        String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
+                        publishMessage(publishMsg, "1");
+                        Thread.sleep(500);
+                        publishMessage(publishMsg, "2");
+                        Thread.sleep(500);
+                        sensorList.set(Integer.parseInt(sensor.getGroupId())-1, sensor.getState());
+                    }
                 }
             }
         }
