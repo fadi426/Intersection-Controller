@@ -1,20 +1,30 @@
 package model;
 
+import java.sql.Time;
+
 public class TrafficLight {
 
-    private int id;
-    private int state;
+    private String id;
+    private String state;
+    private String groupId;
+    private Time time;
 
-    public TrafficLight(int id, int state) {
+    public TrafficLight(String id, String state, String groupId, Time time) {
         this.id = id;
         this.state = state;
+        this.groupId = groupId;
+        this.time = time;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public int getState() {
+    public String getState() {
         return state;
     }
+
+    public String getGroupId() { return groupId; }
+
+    public Time getTime() { return time; }
 }

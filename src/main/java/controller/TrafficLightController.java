@@ -15,11 +15,13 @@ public class TrafficLightController extends Thread {
     private List<String> messageQueue = new ArrayList<>();
     private List<String> topiceQueue = new ArrayList<>();
     private List<String> sensorList = new ArrayList<>(Arrays.asList("0", "0"));
+
+    private List<String> currLightArr = new ArrayList<>();
+    private List<String> greenLightReqArr = new ArrayList<>();
+
     private TrafficSensorController trafficSensorController;
     private MqttClient mqttClient;
     private String mainTopic;
-    private int listSize = 0;
-    private int counter = 1;
 
 
     public void run(){
@@ -34,7 +36,6 @@ public class TrafficLightController extends Thread {
                 } catch (InterruptedException e) {
                     System.out.println("Failed to send message");
                 }
-               // counter = listSize;
             }
             try {
                 Thread.sleep(0);
@@ -50,7 +51,7 @@ public class TrafficLightController extends Thread {
         Matcher m = r.matcher(topic);
         if (m.find( )) {
             if (m.group(4).contains("sensor"))
-            trafficSensorController.changeTrafficSensor(m.group(2), m.group(3), m.group(5), message);
+                trafficSensorController.changeTrafficSensor(m.group(2), m.group(3), m.group(5), message);
         } else {
 
             System.out.println(topic + " = NO MATCH");
@@ -66,9 +67,7 @@ public class TrafficLightController extends Thread {
             for (TrafficSensor sensor : trafficSensorList){
                 if (sensor.getState().equals("1") && !sensorList.get(Integer.parseInt(sensor.getGroupId())-1).equals(sensor.getState()) && exsist == false){
                     String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId()  + "/" + "light/" + sensor.getId();
- //                   System.out.println(publishMsg);
-                    publishMessage(publishMsg, "0");
-                    Thread.sleep(1500);
+                    publishMessage(publishMsg, "2");
                     System.out.println("listsize = " + trafficSensorList.size());
                     exsist = true;
                     sensorList.set(Integer.parseInt(sensor.getGroupId())-1,sensor.getState());
@@ -77,13 +76,14 @@ public class TrafficLightController extends Thread {
                     if (!sensorList.get(Integer.parseInt(sensor.getGroupId())-1).equals(sensor.getState())) {
                         String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
                         publishMessage(publishMsg, "1");
-                        Thread.sleep(500);
-                        publishMessage(publishMsg, "2");
-                        Thread.sleep(500);
+//                        Thread.sleep(300);
+                        publishMessage(publishMsg, "0");
+//                        Thread.sleep(500);
                         sensorList.set(Integer.parseInt(sensor.getGroupId())-1, sensor.getState());
                     }
                 }
             }
+            Thread.sleep(1000);
         }
     }
 
@@ -108,7 +108,6 @@ public class TrafficLightController extends Thread {
         if (!exists) {
             messageQueue.add(message);
             topiceQueue.add(topic);
-            listSize += 1;
         }
     }
 
