@@ -61,14 +61,21 @@ public class MqttController implements MqttCallback {
 
 	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
 		if (topic.contains("sensor") && message.toString() != (tempMessage) && topic != (tempTopic)) {
-				System.out.println("Mqtt topic : " + topic);
-				System.out.println("Mqtt msg : " + message.toString());
-				trafficLightController.addMessage(message.toString(), topic);
-				System.out.println((trafficLightController.getTopiceQueue().size()) + " MESSAGES IN QUEUE");
-				tempMessage = message.toString();
-				tempTopic = topic;
-				//sensorTopicRegex(topic, message.toString());
-				//changeLights();
+			System.out.println("Mqtt topic : " + topic);
+			System.out.println("Mqtt msg : " + message.toString());
+			sensorTopicRegex(topic, message.toString());
+		}
+	}
+	public void sensorTopicRegex(String topic, String message) {
+		String pattern = "(\\d+)\\/(\\w+)\\/(\\d+)\\/(\\w+)\\/(\\d+)";
+		Pattern r = Pattern.compile(pattern);
+		Matcher m = r.matcher(topic);
+		if (m.find( )) {
+			if (m.group(4).contains("sensor"))
+				trafficSensorController.changeTrafficSensor(m.group(2), m.group(3), m.group(5), message);
+		} else {
+
+			System.out.println(topic + " = NO MATCH");
 		}
 	}
 
@@ -101,6 +108,4 @@ public class MqttController implements MqttCallback {
 		connOpts.setPassword(password.toCharArray());
 		return connOpts;
 	}
-
-
 }
