@@ -15,6 +15,7 @@ public class TrafficLightController extends Thread {
 
     private Timer timer = new Timer();
     private int switchTime = 3000;
+    TrafficSensor lastGreen = null;
 
     public void run(){
         timer.schedule(task,0,switchTime);
@@ -53,7 +54,7 @@ public class TrafficLightController extends Thread {
         List<TrafficSensor> trafficSensorList = trafficSensorController.getTrafficSensorList();
         List<TrafficSensor> greenLightArr = new ArrayList<>();
         List<TrafficSensor> redLightArr = new ArrayList<>();
-        
+
         if (trafficSensorList.size() > 0 ) {
             for (TrafficSensor sensor : trafficSensorList){
                 if (sensor.getState().equals("1")) {
@@ -63,6 +64,12 @@ public class TrafficLightController extends Thread {
                     redLightArr.add(sensor);
                 }
             }
+            if (lastGreen != null){
+                Thread.sleep(500);
+                String publishMsg = mainTopic + "/" + lastGreen.getGroup() + "/" + lastGreen.getGroupId() + "/" + "light/" + lastGreen.getId();
+                publishMessage(publishMsg, "1");
+                lastGreen = null;
+            }
             if (greenLightArr.size() > 0) {
                 Random randomGenerator = new Random();
                 int randomInt = randomGenerator.nextInt(greenLightArr.size()) + 1;
@@ -70,6 +77,7 @@ public class TrafficLightController extends Thread {
                 TrafficSensor sensor = greenLightArr.get(randomInt - 1);
                 String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
                 publishMessage(publishMsg, "2");
+                lastGreen = sensor;
                 for (TrafficSensor s : greenLightArr) {
                     if (s != sensor)
                         redLightArr.add(s);
