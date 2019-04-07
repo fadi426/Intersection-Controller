@@ -14,7 +14,7 @@ public class TrafficSensorController {
         boolean exists = false;
         if (trafficSensorList.size() >0) {
                 for (TrafficSensor sensor : trafficSensorList) {
-                    if (sensor.getId().equals(sensorId) && sensor.getGroupId().equals(groupId)) {
+                    if (sensor.getGroup().equals(group) && sensor.getId().equals(sensorId) && sensor.getGroupId().equals(groupId)) {
                         sensor.setState(sensorValue);
                         exists = true;
                     }
