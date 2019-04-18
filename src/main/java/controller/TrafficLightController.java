@@ -25,13 +25,6 @@ public class TrafficLightController extends Thread {
         timer.schedule(orangeLightScheduler,4000,switchTime);
         timer.schedule(redLightScheduler,5000,switchTime);
         timer.schedule(greenLightScheduler,0,switchTime);
-
-//        try {
-//            Thread.sleep(switchTime);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        timer.schedule(task2, 0, switchTime);
     }
 
     TimerTask greenLightScheduler = new TimerTask() {
@@ -41,71 +34,49 @@ public class TrafficLightController extends Thread {
                 return;
             }
             List<TrafficSensor> trafficSensorList = trafficSensorController.getTrafficSensorList();
+            List<TrafficSensor> highSensorArr = new ArrayList<>();
+            List<List<TrafficLight>> availableSensorArr = new ArrayList<>();
 
             if (trafficSensorList.size() > 0 ) {
                 for (TrafficSensor sensor : trafficSensorList) {
                     if (sensor.getState().equals("1"))
-                        greenLightArr.add(sensor);
+                        highSensorArr.add(sensor);
                 }
-                if (greenLightArr.size() > 0) {
+                if (highSensorArr.size() > 0) {
 
-                    List<Integer> groupScores = new ArrayList<>();
-
-                    for (int i = 0; i < groups.size(); i++){
-                        int score = 0;
-                        for (TrafficLight light : groups.get(i)){
-                            for (TrafficSensor sensor : greenLightArr) {
-                                //if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup())) {
-                                    score = score + light.getScore();
-                                //}
+                    List<Integer> lightScore = new ArrayList<>();
+                    for (TrafficSensor sensor : highSensorArr){
+                        for (int i = 0; i < initTrafficCases.getTrafficLights().size(); i++) {
+                            TrafficLight light = initTrafficCases.getTrafficLights().get(i);
+                            if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())){
+                                int score = initTrafficCases.getTrafficLights().get(i).getScore();
+                                lightScore.add(score);
+                                availableSensorArr.add(groups.get(i));
                             }
                         }
-                        groupScores.add(score);
                     }
-
                     List<List<TrafficLight>> priorityGroups = new ArrayList<>();
-                    int highestScore = getMax(groupScores);
-                    for (int score : groupScores){
-                        if (score == highestScore){
-                         priorityGroups.add(groups.get(groupScores.indexOf(score)));
+                    int highestScore = getMax(lightScore);
+                    for( int i = 0; i < lightScore.size(); i++) {
+                        int score = lightScore.get(i);
+                        if (score == highestScore) {
+                            priorityGroups.add(availableSensorArr.get(i));
                         }
                     }
                     int randomInt = new Random().nextInt(priorityGroups.size());
-                    List<TrafficLight> priorityGroup = priorityGroups.get(randomInt);
+                    List<TrafficLight> priorityGroup = new ArrayList<>();
 
-                    for (TrafficSensor sensor : greenLightArr) {
-                        for (TrafficLight light : priorityGroup){
-                            if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())) {
-                                String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
-                                publishMessage(publishMsg, "2");
-                                redLightArr.add(sensor);
-                                light.substractToScore(1);
-                            }
-                        }
+                    for (TrafficLight light : priorityGroups.get(randomInt)){
+                        priorityGroup.add(light);
                     }
-                    for (List<TrafficLight> group : cycleGroups) {
-                        Boolean exsist = false;
-                        TrafficSensor lightSensor = null;
-                        TrafficLight C1L1 = new TrafficLight("cycle", "1", "1", "0", 0);
-                        for (TrafficSensor sensor : redLightArr) {
-                            for (TrafficLight light : group) {
-                                if ( sensor.getGroup().equals(light.getGroup()) &&sensor.getGroupId().equals(light.getGroupId()) && sensor.getId().equals(light.getId())) {
-                                    exsist = true;
-                                }
-                            }
-                        }
-                        for (TrafficSensor sensor : greenLightArr){
-                            if ( sensor.getGroup().equals(C1L1.getGroup()) && sensor.getGroupId().equals(C1L1.getGroupId()) &&  sensor.getId().equals(C1L1.getId())) {
-                                lightSensor = sensor;
-                            }
-                        }
-                        if (!exsist && lightSensor != null){
-                            if (lightSensor.getState().equals("1")) {
-                                String publishMsg = mainTopic + "/" + lightSensor.getGroup() + "/" + lightSensor.getGroupId() + "/" + "light/" + lightSensor.getId();
-                                publishMessage(publishMsg, "2");
-                                redLightArr.add(lightSensor);
-                            }
-                        }
+
+                    for (TrafficSensor sensor : highSensorArr) {
+                        containsTL(priorityGroup, sensor);
+                    }
+
+                    for (TrafficSensor sensor : greenLightArr){
+                        sendMessage(sensor, "2");
+                        redLightArr.add(sensor);
                     }
                 }
             }
@@ -118,8 +89,7 @@ public class TrafficLightController extends Thread {
         public void run() {
             if (redLightArr.size() > 0) {
                 for (TrafficSensor sensor : redLightArr) {
-                    String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
-                    publishMessage(publishMsg, "1");
+                    sendMessage(sensor, "1");
                 }
             }
         }
@@ -130,8 +100,7 @@ public class TrafficLightController extends Thread {
         public void run() {
             if (redLightArr.size() > 0) {
                 for (TrafficSensor sensor : redLightArr) {
-                    String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
-                    publishMessage(publishMsg, "0");
+                    sendMessage(sensor, "0");
                 }
             }
             redLightArr.clear();
@@ -163,5 +132,43 @@ public class TrafficLightController extends Thread {
             }
         }
         return (maxValue);
+    }
+
+    public void sendMessage(TrafficSensor sensor, String mode) {
+        List<String> doubleLight = new ArrayList<>(Arrays.asList("5", "7", "10"));
+
+        if (doubleLight.contains(sensor.getGroupId())) {
+            String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + "1";
+            publishMessage(publishMsg, mode);
+
+            publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + "2";
+            publishMessage(publishMsg, mode);
+        }
+        else{
+            String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
+            publishMessage(publishMsg, mode);
+        }
+
+    }
+
+    public void containsTL(List<TrafficLight> lights, TrafficSensor sensor){
+        for (TrafficLight light : lights){
+            if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())) {
+               return;
+            }
+        }
+
+        for (int i = 0; i < initTrafficCases.getTrafficLights().size(); i++){
+            TrafficLight light = initTrafficCases.getTrafficLights().get(i);
+            if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())) {
+                light.substractToScore(1);
+                greenLightArr.add(sensor);
+
+                for (TrafficLight tl : groups.get(i)){
+                    if (!lights.contains(tl))
+                        lights.add(tl);
+                }
+            }
+        }
     }
 }
