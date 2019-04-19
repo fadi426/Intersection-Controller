@@ -56,6 +56,11 @@ public class TrafficLightController extends Thread {
                         }
                     }
                     List<List<TrafficLight>> priorityGroups = new ArrayList<>();
+
+                    if (lightScore.size() == 0){
+                        return;
+                    }
+
                     int highestScore = getMax(lightScore);
                     for( int i = 0; i < lightScore.size(); i++) {
                         int score = lightScore.get(i);
@@ -137,7 +142,7 @@ public class TrafficLightController extends Thread {
     public void sendMessage(TrafficSensor sensor, String mode) {
         List<String> doubleLight = new ArrayList<>(Arrays.asList("5", "7", "10"));
 
-        if (doubleLight.contains(sensor.getGroupId())) {
+        if (doubleLight.contains(sensor.getGroupId()) || sensor.getGroup().equals("foot")) {
             String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + "1";
             publishMessage(publishMsg, mode);
 
