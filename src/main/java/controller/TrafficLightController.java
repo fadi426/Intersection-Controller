@@ -14,16 +14,15 @@ public class TrafficLightController extends Thread {
     private TrafficSensorController trafficSensorController;
     private InitTrafficCases initTrafficCases = new InitTrafficCases();
     List<List<TrafficLight>> groups = initTrafficCases.getGroups();
-    List<List<TrafficLight>> cycleGroups = initTrafficCases.getCyleGroups();
     private MqttClient mqttClient;
     private String mainTopic;
 
     private Timer timer = new Timer();
-    private int switchTime = 7000;
+    private int switchTime = 8000;
 
     public void run(){
-        timer.schedule(orangeLightScheduler,4000,switchTime);
-        timer.schedule(redLightScheduler,5000,switchTime);
+        timer.schedule(orangeLightScheduler,6000,switchTime);
+        timer.schedule(redLightScheduler,7000,switchTime);
         timer.schedule(greenLightScheduler,0,switchTime);
     }
 
