@@ -21,6 +21,8 @@ public class TrafficLightController extends Thread {
     private int switchTime = 8000;
 
     public void run(){
+
+
         timer.schedule(orangeLightScheduler,6000,switchTime);
         timer.schedule(redLightScheduler,7000,switchTime);
         timer.schedule(greenLightScheduler,0,switchTime);
@@ -126,6 +128,12 @@ public class TrafficLightController extends Thread {
         this.trafficSensorController = trafficSensorController;
         this.mqttClient = mqttClient;
         this.mainTopic = mainTopic;
+
+        String publishMsg = mainTopic + "/" + "motor_vehicle" + "/" + "13" + "/" + "light/" + "1";
+        publishMessage(publishMsg, "2");
+
+        publishMsg = mainTopic + "/" + "motor_vehicle" + "/" + "13" + "/" + "light/" + "2";
+        publishMessage(publishMsg, "2");
     }
 
     public static int getMax(List<Integer> inputArray){
@@ -141,6 +149,7 @@ public class TrafficLightController extends Thread {
     public void sendMessage(TrafficSensor sensor, String mode) {
         List<String> doubleLight = new ArrayList<>(Arrays.asList("5", "7", "10"));
 
+
         if (doubleLight.contains(sensor.getGroupId()) || sensor.getGroup().equals("foot")) {
             String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + "1";
             publishMessage(publishMsg, mode);
@@ -155,20 +164,42 @@ public class TrafficLightController extends Thread {
 
     }
 
-    public void containsTL(List<TrafficLight> lights, TrafficSensor sensor){
-        for (TrafficLight light : lights){
+    public void containsTL(List<TrafficLight> lights, TrafficSensor sensor) {
+        for (TrafficLight light : lights) {
             if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())) {
-               return;
+                return;
             }
         }
 
-        for (int i = 0; i < initTrafficCases.getTrafficLights().size(); i++){
+
+//        List<String> groupIdArr = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
+//        List<String> sensorIdArr = new ArrayList<>(Arrays.asList("1", "2", "1", "2", "1", "2", "1", "2"));
+//        int[][] multi = new int[][]{
+//                { 1, 2},
+//                { 1, 2},
+//                { 3, 4},
+//                { 3, 4},
+//                { 5, 6},
+//                { 5, 6},
+//                { 7, 8},
+//                { 7, 8}
+//        };
+//
+//        if (sensor.getGroup().equals("foot") && groupIdArr.contains(sensor.getGroupId()) && sensorIdArr.contains(sensor.getId())) {
+//            for(int i = 0; i < groupIdArr.size(); i++){
+//                if (groupIdArr.get(i).equals(sensor.getGroupId())){
+//
+//                }
+//            }
+//        }
+
+        for (int i = 0; i < initTrafficCases.getTrafficLights().size(); i++) {
             TrafficLight light = initTrafficCases.getTrafficLights().get(i);
             if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())) {
                 light.substractToScore(1);
                 greenLightArr.add(sensor);
 
-                for (TrafficLight tl : groups.get(i)){
+                for (TrafficLight tl : groups.get(i)) {
                     if (!lights.contains(tl))
                         lights.add(tl);
                 }
