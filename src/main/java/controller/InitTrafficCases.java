@@ -10,6 +10,7 @@ public class InitTrafficCases {
 
     private List<TrafficLight> trafficLights = new ArrayList<>();
     private List<List<TrafficLight>> groups = new ArrayList<>();
+    private List<TrafficLight> exceptionGroup = new ArrayList<>();
 
     private TrafficLight MV1L1 = new TrafficLight("motor_vehicle", "1", "1", "0", 0);
     private TrafficLight MV2L1 = new TrafficLight("motor_vehicle", "2", "1", "0", 0);
@@ -23,35 +24,38 @@ public class InitTrafficCases {
     private TrafficLight MV10L1 = new TrafficLight("motor_vehicle", "10", "1", "0", 0);
     private TrafficLight MV11L1 = new TrafficLight("motor_vehicle", "11", "1", "0", 0);
     private TrafficLight MV12L1 = new TrafficLight("motor_vehicle", "12", "1", "0", 0);
+    private TrafficLight MV13L1 = new TrafficLight("motor_vehicle", "13", "1", "0", 0);
+    private TrafficLight MV13L2 = new TrafficLight("motor_vehicle", "13", "2", "0", 0);
 
     private TrafficLight C1L1 = new TrafficLight("cycle", "1", "1", "0", 0);
     private TrafficLight C2L1 = new TrafficLight("cycle", "2", "1", "0", 0);
     private TrafficLight C3L1 = new TrafficLight("cycle", "3", "1", "0", 0);
     private TrafficLight C4L1 = new TrafficLight("cycle", "4", "1", "0", 0);
+    private TrafficLight C5L1 = new TrafficLight("cycle", "5", "1", "0", 0);
+    private TrafficLight C5L2 = new TrafficLight("cycle", "5", "2", "0", 0);
+
 
     private TrafficLight F1L1 = new TrafficLight("foot", "1", "1", "0", 0);
     private TrafficLight F1L2 = new TrafficLight("foot", "1", "2", "0", F1L1.getScore());
-
     private TrafficLight F2L1 = new TrafficLight("foot", "2", "1", "0", 0);
     private TrafficLight F2L2 = new TrafficLight("foot", "2", "2", "0", F2L1.getScore());
-
     private TrafficLight F3L1 = new TrafficLight("foot", "3", "1", "0", 0);
     private TrafficLight F3L2 = new TrafficLight("foot", "3", "2", "0", F3L1.getScore());
-
     private TrafficLight F4L1 = new TrafficLight("foot", "4", "1", "0", 0);
     private TrafficLight F4L2 = new TrafficLight("foot", "4", "2", "0", F4L1.getScore());
-
     private TrafficLight F5L1 = new TrafficLight("foot", "5", "1", "0", 0);
     private TrafficLight F5L2 = new TrafficLight("foot", "5", "2", "0", F5L1.getScore());
-
     private TrafficLight F6L1 = new TrafficLight("foot", "6", "1", "0", 0);
     private TrafficLight F6L2 = new TrafficLight("foot", "6", "2", "0", F6L1.getScore());
-
     private TrafficLight F7L1 = new TrafficLight("foot", "7", "1", "0", 0);
     private TrafficLight F7L2 = new TrafficLight("foot", "7", "2", "0", F7L1.getScore());
-
     private TrafficLight F8L1 = new TrafficLight("foot", "8", "1", "0", 0);
     private TrafficLight F8L2 = new TrafficLight("foot", "8", "2", "0", F8L1.getScore());
+    private TrafficLight F9L1 = new TrafficLight("foot", "9", "1", "0", 0);
+    private TrafficLight F9L2 = new TrafficLight("foot", "9", "2", "0", F9L1.getScore());
+
+    private TrafficLight V1L1 = new TrafficLight("vessel", "1", "1", "0", 0);
+    private TrafficLight V2L1 = new TrafficLight("vessel", "2", "1", "0", 0);
 
     
     public InitTrafficCases(){
@@ -91,6 +95,9 @@ public class InitTrafficCases {
         trafficLights.add(F8L1);
         trafficLights.add(F8L2);
 
+        trafficLights.add(V1L1);
+        trafficLights.add(V2L1);
+
 
         List<TrafficLight> MV1 = new ArrayList<>(Arrays.asList(MV5L1, C1L1, C4L1, F1L1, F1L2, F2L2, F7L1, F8L1, F8L2));
         List<TrafficLight> MV2 = new ArrayList<>(Arrays.asList(MV5L1, MV6L1, MV8L1, MV9L1, MV10L1, MV11L1, MV12L1, C1L1, C3L1, F1L1, F1L2, F2L2, F5L1, F6L1, F6L2));
@@ -112,34 +119,24 @@ public class InitTrafficCases {
 
         List<TrafficLight> F1_1 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV4L1, MV8L1, MV11L1));
         List<TrafficLight> F1_2 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1));
-
-
         List<TrafficLight> F2_1 = new ArrayList<>(Arrays.asList(MV4L1, MV8L1, MV11L1));
         List<TrafficLight> F2_2 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV4L1, MV8L1, MV11L1));
-
-
         List<TrafficLight> F3_1 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV6L1, MV7L1, MV5L1, MV10L1));
         List<TrafficLight> F3_2 = new ArrayList<>(Arrays.asList(MV4L1, MV5L1, MV6L1));
-
-
         List<TrafficLight> F4_1 = new ArrayList<>(Arrays.asList(MV3L1, MV7L1, MV10L1));
         List<TrafficLight> F4_2 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV6L1, MV7L1, MV5L1, MV10L1));
-
-
         List<TrafficLight> F5_1 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV8L1, MV9L1));
         List<TrafficLight> F5_2 = new ArrayList<>(Arrays.asList(MV7L1, MV8L1));
-
-
         List<TrafficLight> F6_1 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV9L1));
         List<TrafficLight> F6_2 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV8L1, MV9L1));
-
-
         List<TrafficLight> F7_1 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1, MV9L1, MV10L1, MV11L1));
         List<TrafficLight> F7_2 = new ArrayList<>(Arrays.asList(MV9L1, MV10L1, MV11L1));
-
-
         List<TrafficLight> F8_1 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1));
         List<TrafficLight> F8_2 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1, MV9L1, MV10L1, MV11L1));
+
+
+        List<TrafficLight> V1 = new ArrayList<>(Arrays.asList(MV1L1));
+        List<TrafficLight> V2 = new ArrayList<>(Arrays.asList(MV1L1));
 
         groups.add(MV1);
         groups.add(MV2);
@@ -175,6 +172,16 @@ public class InitTrafficCases {
         groups.add(F7_2);
         groups.add(F8_1);
         groups.add(F8_2);
+
+        groups.add(V1);
+        groups.add(V2);
+
+        exceptionGroup.add(MV13L1);
+        exceptionGroup.add(MV13L2);
+        exceptionGroup.add(C5L1);
+        exceptionGroup.add(C5L2);
+        exceptionGroup.add(F9L1);
+        exceptionGroup.add(F9L2);
     }
 
     public List<List<TrafficLight>> getGroups() {
@@ -184,4 +191,6 @@ public class InitTrafficCases {
     public List<TrafficLight> getTrafficLights() {
         return trafficLights;
     }
+
+    public List<TrafficLight> getExceptionGroup() { return exceptionGroup; }
 }

@@ -33,4 +33,11 @@ public class TrafficSensorController {
         return trafficSensorList;
     }
 
+    public void addExceptions(List <TrafficLight> trafficLights){
+        for(TrafficLight trafficLight : trafficLights) {
+            trafficSensorList.add( new TrafficSensor(trafficLight.getGroup(), trafficLight.getGroupId(), trafficLight.getId(), "1"));
+        }
+
+    }
+
 }
