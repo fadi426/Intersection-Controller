@@ -1,5 +1,6 @@
 package controller;
 
+import model.ComponentType;
 import model.TrafficLight;
 import model.TrafficSensor;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -14,18 +15,20 @@ public class TrafficLightController extends Thread {
     private TrafficSensorController trafficSensorController;
     private InitTrafficCases initTrafficCases = new InitTrafficCases();
     List<List<TrafficLight>> groups = initTrafficCases.getGroups();
+    List<TrafficSensor> trafficSensorList = new ArrayList<>();
+    List<TrafficLight> priorityGroup2 = new ArrayList<>();
+
     private MqttClient mqttClient;
     private String mainTopic;
 
     private Timer timer = new Timer();
-    private int switchTime = 8000;
+    private int switchTime = 9000;
 
     public void run(){
-
-
-        timer.schedule(orangeLightScheduler,6000,switchTime);
-        timer.schedule(redLightScheduler,7000,switchTime);
+        timer.schedule(orangeLightScheduler,7000,switchTime);
+        timer.schedule(redLightScheduler,8000,switchTime);
         timer.schedule(greenLightScheduler,0,switchTime);
+        timer.schedule(bridgeScheduler,0,switchTime*2 +250);
     }
 
     TimerTask greenLightScheduler = new TimerTask() {
@@ -34,7 +37,7 @@ public class TrafficLightController extends Thread {
             if (trafficSensorController == null){
                 return;
             }
-            List<TrafficSensor> trafficSensorList = trafficSensorController.getTrafficSensorList();
+            trafficSensorList = trafficSensorController.getTrafficSensorList();
             List<TrafficSensor> highSensorArr = new ArrayList<>();
             List<List<TrafficLight>> availableSensorArr = new ArrayList<>();
 
@@ -71,7 +74,7 @@ public class TrafficLightController extends Thread {
                     }
                     int randomInt = new Random().nextInt(priorityGroups.size());
                     List<TrafficLight> priorityGroup = new ArrayList<>();
-
+                    priorityGroup.addAll(priorityGroup2);
                     for (TrafficLight light : priorityGroups.get(randomInt)){
                         priorityGroup.add(light);
                     }
@@ -79,46 +82,13 @@ public class TrafficLightController extends Thread {
                     for (TrafficSensor sensor : highSensorArr) {
                         containsTL(priorityGroup, sensor);
                     }
-
-                    boolean vessel = false;
-                    for (TrafficSensor s : greenLightArr){
-                        if (s.getGroup().equals("vessel")){
-                            vessel = true;
-                        }
-                    }
-                    // TODO make a more generic way of executing the color changes for the exceptions
-                    List<TrafficSensor> tempGreenLightArr = new ArrayList<>();
-                    List<TrafficSensor> tempRedLightArr = new ArrayList<>();
-                    if (!vessel){
-                        for (TrafficLight light : initTrafficCases.getExceptionGroup()){
-                            for (TrafficSensor sensor : trafficSensorList) {
-                                if (sensor.getGroup().equals(light.getGroup()) && sensor.getGroupId().equals(light.getGroupId()) && sensor.getId().equals(light.getId())) {
-                                    if (!greenLightArr.contains(sensor))
-                                        tempGreenLightArr.add(sensor);
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        for (TrafficLight light : initTrafficCases.getExceptionGroup()){
-                            for (TrafficSensor sensor : trafficSensorList) {
-                                if (sensor.getGroup().equals(light.getGroup()) && sensor.getGroupId().equals(light.getGroupId()) && sensor.getId().equals(light.getId())) {
-                                    tempRedLightArr.add(sensor);
-                                }
-                            }
-                        }
-                    }
-                    for (TrafficSensor sensor : tempGreenLightArr){
-                        sendMessage(sensor, "2");
-                    }
-
-                    for (TrafficSensor sensor : tempRedLightArr){
-                        sendMessage(sensor, "0");
-                    }
+                    priorityGroup.clear();
 
                     for (TrafficSensor sensor : greenLightArr){
-                        sendMessage(sensor, "2");
-                        redLightArr.add(sensor);
+                        if (!sensor.getGroup().equals("vessel")){
+                            sendMessage(sensor, "2");
+                            redLightArr.add(sensor);
+                        }
                     }
                 }
             }
@@ -150,6 +120,44 @@ public class TrafficLightController extends Thread {
         }
     };
 
+
+    TimerTask bridgeScheduler = new TimerTask() {
+        @Override
+        public void run() {
+            // TODO make a more generic way of executing the color changes for the exceptions
+            List<ComponentType> tempGreenLightArr = new ArrayList<>();
+            List<ComponentType> tempRedLightArr = new ArrayList<>();
+
+            List<TrafficSensor> tempTrafficSensorList = new ArrayList<>();
+            tempTrafficSensorList.addAll(trafficSensorList);
+            for (TrafficSensor sensor : tempTrafficSensorList) {
+                if (sensor.getGroup().equals("vessel") && sensor.getState().equals("1")) {
+                    tempGreenLightArr.add(sensor);
+                    if (tempRedLightArr.size() <1)
+                        tempRedLightArr.addAll(initTrafficCases.getExceptionGroup());
+                        priorityGroup2.clear();
+                }
+                else if (sensor.getGroup().equals("vessel") && sensor.getState().equals("0")) {
+                    tempRedLightArr.add(sensor);
+                    if (tempGreenLightArr.size() <1)
+                        tempGreenLightArr.addAll(initTrafficCases.getExceptionGroup());
+                        priorityGroup2.addAll(initTrafficCases.getExceptionGroup());
+                }
+            }
+
+            if (tempGreenLightArr.size() < 1 || tempRedLightArr.size() < 1)
+                return;
+
+            for (ComponentType componentType : tempRedLightArr){
+                sendMessage(componentType, "0");
+            }
+
+            for (ComponentType componentType : tempGreenLightArr){
+                sendMessage(componentType, "2");
+            }
+        }
+    };
+
     public void publishMessage(String topic, String content){
         MqttMessage message = new MqttMessage(content.getBytes());
         message.setQos(1);
@@ -165,7 +173,6 @@ public class TrafficLightController extends Thread {
         this.trafficSensorController = trafficSensorController;
         this.mqttClient = mqttClient;
         this.mainTopic = mainTopic;
-        trafficSensorController.addExceptions(initTrafficCases.getExceptionGroup());
     }
 
     public static int getMax(List<Integer> inputArray){
@@ -178,19 +185,18 @@ public class TrafficLightController extends Thread {
         return (maxValue);
     }
 
-    public void sendMessage(TrafficSensor sensor, String mode) {
+    public void sendMessage(ComponentType componentType, String mode) {
         List<String> doubleLight = new ArrayList<>(Arrays.asList("5", "7", "10", "13"));
 
-
-        if (doubleLight.contains(sensor.getGroupId()) || sensor.getGroup().equals("foot")) {
-            String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + "1";
+        if (doubleLight.contains(componentType.getGroupId()) || componentType.getGroup().equals("foot") || (componentType.getGroup().equals("motor_vehicle") && Integer.parseInt(componentType.getId()) > 1)) {
+            String publishMsg = mainTopic + "/" + componentType.getGroup() + "/" + componentType.getGroupId() + "/" + "light/" + "1";
             publishMessage(publishMsg, mode);
 
-            publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + "2";
+            publishMsg = mainTopic + "/" + componentType.getGroup() + "/" + componentType.getGroupId() + "/" + "light/" + "2";
             publishMessage(publishMsg, mode);
         }
         else{
-            String publishMsg = mainTopic + "/" + sensor.getGroup() + "/" + sensor.getGroupId() + "/" + "light/" + sensor.getId();
+            String publishMsg = mainTopic + "/" + componentType.getGroup() + "/" + componentType.getGroupId() + "/" + "light/" + componentType.getId();
             publishMessage(publishMsg, mode);
         }
 
@@ -203,33 +209,12 @@ public class TrafficLightController extends Thread {
             }
         }
 
-
-//        List<String> groupIdArr = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8"));
-//        List<String> sensorIdArr = new ArrayList<>(Arrays.asList("1", "2", "1", "2", "1", "2", "1", "2"));
-//        int[][] multi = new int[][]{
-//                { 1, 2},
-//                { 1, 2},
-//                { 3, 4},
-//                { 3, 4},
-//                { 5, 6},
-//                { 5, 6},
-//                { 7, 8},
-//                { 7, 8}
-//        };
-//
-//        if (sensor.getGroup().equals("foot") && groupIdArr.contains(sensor.getGroupId()) && sensorIdArr.contains(sensor.getId())) {
-//            for(int i = 0; i < groupIdArr.size(); i++){
-//                if (groupIdArr.get(i).equals(sensor.getGroupId())){
-//
-//                }
-//            }
-//        }
-
         for (int i = 0; i < initTrafficCases.getTrafficLights().size(); i++) {
             TrafficLight light = initTrafficCases.getTrafficLights().get(i);
             if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && sensor.getId().equals(light.getId())) {
                 light.substractToScore(1);
-                greenLightArr.add(sensor);
+                if (!initTrafficCases.getExceptionGroup().contains(light))
+                    greenLightArr.add(sensor);
 
                 for (TrafficLight tl : groups.get(i)) {
                     if (!lights.contains(tl))

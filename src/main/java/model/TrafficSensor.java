@@ -1,6 +1,6 @@
 package model;
 
-public class TrafficSensor {
+public class TrafficSensor implements ComponentType{
 
     private String group;
     private String groupId;

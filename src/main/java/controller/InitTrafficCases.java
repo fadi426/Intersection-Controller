@@ -17,11 +17,14 @@ public class InitTrafficCases {
     private TrafficLight MV3L1 = new TrafficLight("motor_vehicle", "3", "1", "0", 0);
     private TrafficLight MV4L1 = new TrafficLight("motor_vehicle", "4", "1", "0", 0);
     private TrafficLight MV5L1 = new TrafficLight("motor_vehicle", "5", "1", "0", 0);
+    private TrafficLight MV5L2 = new TrafficLight("motor_vehicle", "5", "4", "0", MV5L1.getScore());
     private TrafficLight MV6L1 = new TrafficLight("motor_vehicle", "6", "1", "0", 0);
     private TrafficLight MV7L1 = new TrafficLight("motor_vehicle", "7", "1", "0", 0);
+    private TrafficLight MV7L2 = new TrafficLight("motor_vehicle", "7", "3", "0", MV7L1.getScore());
     private TrafficLight MV8L1 = new TrafficLight("motor_vehicle", "8", "1", "0", 0);
     private TrafficLight MV9L1 = new TrafficLight("motor_vehicle", "9", "1", "0", 0);
     private TrafficLight MV10L1 = new TrafficLight("motor_vehicle", "10", "1", "0", 0);
+    private TrafficLight MV10L2 = new TrafficLight("motor_vehicle", "10", "4", "0", MV10L1.getScore());
     private TrafficLight MV11L1 = new TrafficLight("motor_vehicle", "11", "1", "0", 0);
     private TrafficLight MV12L1 = new TrafficLight("motor_vehicle", "12", "1", "0", 0);
     private TrafficLight MV13L1 = new TrafficLight("motor_vehicle", "13", "1", "0", 0);
@@ -57,7 +60,7 @@ public class InitTrafficCases {
     private TrafficLight V1L1 = new TrafficLight("vessel", "1", "1", "0", 0);
     private TrafficLight V2L1 = new TrafficLight("vessel", "2", "1", "0", 0);
 
-    
+
     public InitTrafficCases(){
 
         trafficLights.add(MV1L1);
@@ -65,11 +68,14 @@ public class InitTrafficCases {
         trafficLights.add(MV3L1);
         trafficLights.add(MV4L1);
         trafficLights.add(MV5L1);
+        trafficLights.add(MV5L2);
         trafficLights.add(MV6L1);
         trafficLights.add(MV7L1);
+        trafficLights.add(MV7L2);
         trafficLights.add(MV8L1);
         trafficLights.add(MV9L1);
         trafficLights.add(MV10L1);
+        trafficLights.add(MV10L2);
         trafficLights.add(MV11L1);
         trafficLights.add(MV12L1);
 
@@ -99,40 +105,43 @@ public class InitTrafficCases {
         trafficLights.add(V2L1);
 
 
-        List<TrafficLight> MV1 = new ArrayList<>(Arrays.asList(MV5L1, C1L1, C4L1, F1L1, F1L2, F2L2, F7L1, F8L1, F8L2));
-        List<TrafficLight> MV2 = new ArrayList<>(Arrays.asList(MV5L1, MV6L1, MV8L1, MV9L1, MV10L1, MV11L1, MV12L1, C1L1, C3L1, F1L1, F1L2, F2L2, F5L1, F6L1, F6L2));
-        List<TrafficLight> MV3 = new ArrayList<>(Arrays.asList(MV5L1, MV6L1, MV7L1, MV8L1, MV10L1, MV11L1, C1L1, C2L1, F1L1, F1L2, F2L2, F3L1, F4L1, F4L2));
+        List<TrafficLight> MV1 = new ArrayList<>(Arrays.asList(MV5L1, MV5L2, C1L1, C4L1, F1L1, F1L2, F2L2, F7L1, F8L1, F8L2));
+        List<TrafficLight> MV2 = new ArrayList<>(Arrays.asList(MV5L1, MV5L2, MV6L1, MV8L1, MV9L1, MV10L1, MV10L2, MV11L1, MV12L1, C1L1, C3L1, F1L1, F1L2, F2L2, F5L1, F6L1, F6L2));
+        List<TrafficLight> MV3 = new ArrayList<>(Arrays.asList(MV5L1, MV5L2, MV6L1, MV7L1, MV7L2, MV8L1, MV10L1, MV10L2, MV11L1,MV13L1, C1L1, C2L1, F1L1, F1L2, F2L2, F3L1, F4L1, F4L2));
         List<TrafficLight> MV4 = new ArrayList<>(Arrays.asList(MV8L1, MV11L1, C1L1, C2L1, F1L1, F2L1, F2L2, F3L1, F3L2, F4L2));
         List<TrafficLight> MV5 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV8L1, MV11L1, C2L1, C4L1, F3L1, F3L2, F4L2, F7L1, F8L1, F8L2));
-        List<TrafficLight> MV6 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV8L1, MV9L1, MV10L1, MV12L1, C2L1, C3L1, F3L1, F3L2, F4L2, F5L1, F6L1, F6L2));
-        List<TrafficLight> MV7 = new ArrayList<>(Arrays.asList(MV3L1, MV10L1, MV12L1, C2L1, F3L1, F4L1, F4L2, F5L1, F5L2, F6L2, C3L1));
-        List<TrafficLight> MV8 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV4L1, MV5L1, MV6L1, MV10L1, MV11L1, MV12L1, C1L1, C3L1, C4L1, F1L1, F2L1, F2L2, F5L1, F5L2, F6L2, F7L1, F8L1, F8L2));
+        List<TrafficLight> MV5_2 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV8L1, MV11L1, C2L1, C4L1, F3L1, F3L2, F4L2, F7L1, F8L1, F8L2));
+        List<TrafficLight> MV6 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV8L1, MV9L1, MV10L1, MV10L2, MV12L1, C2L1, C3L1, F3L1, F3L2, F4L2, F5L1, F6L1, F6L2));
+        List<TrafficLight> MV7 = new ArrayList<>(Arrays.asList(MV3L1, MV10L1, MV10L2, MV12L1,MV13L1, C2L1, F3L1, F4L1, F4L2, F5L1, F5L2, F6L2, C3L1));
+        List<TrafficLight> MV7_2 = new ArrayList<>(Arrays.asList(MV3L1, MV10L1, MV10L2, MV12L1,MV13L1, C2L1, F3L1, F4L1, F4L2, F5L1, F5L2, F6L2, C3L1));
+        List<TrafficLight> MV8 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV4L1, MV5L1, MV5L2, MV6L1, MV10L1, MV10L2, MV11L1, MV12L1, C1L1, C3L1, C4L1, F1L1, F2L1, F2L2, F5L1, F5L2, F6L2, F7L1, F8L1, F8L2));
         List<TrafficLight> MV9 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV12L1, C3L1, C4L1, F4L2, F5L1, F6L1, F6L2, F7L1, F7L2, F8L2));
-        List<TrafficLight> MV10 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV6L1, MV7L1, MV8L1, C2L1, C4L1, F3L1, F4L1, F7L1, F7L2, F8L2));
-        List<TrafficLight> MV11 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV4L1, MV5L1, MV8L1, C1L1, C4L1, F1L1, F2L1, F2L2, F7L1, F7L2, F8L2));
-        List<TrafficLight> MV12 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV8L1, MV9L1));
+        List<TrafficLight> MV10 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV6L1, MV7L1, MV7L2, MV8L1, MV13L1, C2L1, C4L1, F3L1, F4L1, F7L1, F7L2, F8L2));
+        List<TrafficLight> MV10_2 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV6L1, MV7L1, MV7L2, MV8L1, MV13L1, C2L1, C4L1, F3L1, F4L1, F7L1, F7L2, F8L2));
+        List<TrafficLight> MV11 = new ArrayList<>(Arrays.asList(MV2L1, MV3L1, MV4L1, MV5L1, MV5L2, MV8L1, C1L1, C4L1, F1L1, F2L1, F2L2, F7L1, F7L2, F8L2));
+        List<TrafficLight> MV12 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV7L2, MV8L1, MV9L1));
 
         List<TrafficLight> C1 = new ArrayList<>(Arrays.asList(MV4L1, MV8L1, MV11L1, MV1L1, MV2L1, MV3L1));
-        List<TrafficLight> C2 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV5L1, MV6L1, MV7L1, MV10L1));
-        List<TrafficLight> C3 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV9L1, MV7L1, MV8L1));
-        List<TrafficLight> C4 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1, MV9L1, MV10L1, MV11L1));
+        List<TrafficLight> C2 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV5L1, MV5L2, MV6L1, MV7L1, MV7L2, MV10L1, MV10L2));
+        List<TrafficLight> C3 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV9L1, MV7L1, MV7L2, MV8L1));
+        List<TrafficLight> C4 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV5L2, MV8L1, MV9L1, MV10L1, MV10L2, MV11L1));
 
         List<TrafficLight> F1_1 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV4L1, MV8L1, MV11L1));
         List<TrafficLight> F1_2 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1));
         List<TrafficLight> F2_1 = new ArrayList<>(Arrays.asList(MV4L1, MV8L1, MV11L1));
         List<TrafficLight> F2_2 = new ArrayList<>(Arrays.asList(MV1L1, MV2L1, MV3L1, MV4L1, MV8L1, MV11L1));
-        List<TrafficLight> F3_1 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV6L1, MV7L1, MV5L1, MV10L1));
-        List<TrafficLight> F3_2 = new ArrayList<>(Arrays.asList(MV4L1, MV5L1, MV6L1));
-        List<TrafficLight> F4_1 = new ArrayList<>(Arrays.asList(MV3L1, MV7L1, MV10L1));
-        List<TrafficLight> F4_2 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV6L1, MV7L1, MV5L1, MV10L1));
-        List<TrafficLight> F5_1 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV8L1, MV9L1));
-        List<TrafficLight> F5_2 = new ArrayList<>(Arrays.asList(MV7L1, MV8L1));
+        List<TrafficLight> F3_1 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV6L1, MV7L1, MV7L2, MV5L1, MV5L2, MV10L1, MV10L2));
+        List<TrafficLight> F3_2 = new ArrayList<>(Arrays.asList(MV4L1, MV5L1, MV5L2, MV6L1));
+        List<TrafficLight> F4_1 = new ArrayList<>(Arrays.asList(MV3L1, MV7L1, MV7L2, MV10L1, MV10L2));
+        List<TrafficLight> F4_2 = new ArrayList<>(Arrays.asList(MV3L1, MV4L1, MV6L1, MV7L1, MV7L2, MV5L1, MV5L2, MV10L1, MV10L2));
+        List<TrafficLight> F5_1 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV7L2, MV8L1, MV9L1));
+        List<TrafficLight> F5_2 = new ArrayList<>(Arrays.asList(MV7L1, MV7L2, MV8L1));
         List<TrafficLight> F6_1 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV9L1));
-        List<TrafficLight> F6_2 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV8L1, MV9L1));
-        List<TrafficLight> F7_1 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1, MV9L1, MV10L1, MV11L1));
-        List<TrafficLight> F7_2 = new ArrayList<>(Arrays.asList(MV9L1, MV10L1, MV11L1));
-        List<TrafficLight> F8_1 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1));
-        List<TrafficLight> F8_2 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV8L1, MV9L1, MV10L1, MV11L1));
+        List<TrafficLight> F6_2 = new ArrayList<>(Arrays.asList(MV2L1, MV6L1, MV7L1, MV7L2, MV8L1, MV9L1));
+        List<TrafficLight> F7_1 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV5L2, MV8L1, MV9L1, MV10L1, MV10L2, MV11L1));
+        List<TrafficLight> F7_2 = new ArrayList<>(Arrays.asList(MV9L1, MV10L1, MV10L2, MV11L1));
+        List<TrafficLight> F8_1 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV5L2, MV8L1));
+        List<TrafficLight> F8_2 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV5L2, MV8L1, MV9L1, MV10L1, MV10L2, MV11L1));
 
 
         List<TrafficLight> V1 = new ArrayList<>(Arrays.asList(MV1L1));
@@ -143,11 +152,14 @@ public class InitTrafficCases {
         groups.add(MV3);
         groups.add(MV4);
         groups.add(MV5);
+        groups.add(MV5_2);
         groups.add(MV6);
         groups.add(MV7);
+        groups.add(MV7_2);
         groups.add(MV8);
         groups.add(MV9);
         groups.add(MV10);
+        groups.add(MV10_2);
         groups.add(MV11);
         groups.add(MV12);
 

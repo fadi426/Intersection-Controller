@@ -2,7 +2,7 @@ package model;
 
 import java.sql.Time;
 
-public class TrafficLight {
+public class TrafficLight implements ComponentType{
 
     private String group;
     private String groupId;
@@ -17,19 +17,36 @@ public class TrafficLight {
         this.group = group;
         this.score = score;
     }
-
+    @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getGroupId() { return groupId; }
+
+    @Override
+    public String getGroup() {
+        return group;
     }
 
     public String getState() {
         return state;
     }
 
-    public String getGroupId() { return groupId; }
+    @Override
+    public void setId(String id) {
 
-    public String getGroup() {
-        return group;
+    }
+
+    @Override
+    public void setGroup(String group) {
+
+    }
+
+    @Override
+    public void setGroupId(String groupId) {
+
     }
 
     public void substractToScore(int score){
