@@ -1,6 +1,6 @@
 package model;
 
-import java.sql.Time;
+import java.util.Date;
 
 public class TrafficLight implements ComponentType{
 
@@ -8,14 +8,14 @@ public class TrafficLight implements ComponentType{
     private String groupId;
     private String id;
     private String state;
-    private int score;
+    private Date date;
 
-    public TrafficLight(String group, String groupId, String id, String state, int score) {
+    public TrafficLight(String group, String groupId, String id, String state) {
         this.id = id;
         this.state = state;
         this.groupId = groupId;
         this.group = group;
-        this.score = score;
+        this.date = new Date();
     }
     @Override
     public String getId() {
@@ -49,11 +49,11 @@ public class TrafficLight implements ComponentType{
 
     }
 
-    public void substractToScore(int score){
-        this.score = this.score - score;
+    public void resetDate(){
+        this.date = new Date();
     }
 
-    public int getScore() {
-        return score;
+    public Date getDate() {
+        return date;
     }
 }

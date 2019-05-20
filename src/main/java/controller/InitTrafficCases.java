@@ -10,56 +10,59 @@ public class InitTrafficCases {
 
     private List<TrafficLight> trafficLights = new ArrayList<>();
     private List<List<TrafficLight>> groups = new ArrayList<>();
-    private List<TrafficLight> exceptionGroup = new ArrayList<>();
+    private List<TrafficLight> bridgeGroup = new ArrayList<>();
+    private List<TrafficLight> bridgeExcludedLights = new ArrayList<>();
+    private List<List<TrafficLight>> footGroup = new ArrayList<>();
+    private List<TrafficLight> gateGroup = new ArrayList<>();
 
-    private TrafficLight MV1L1 = new TrafficLight("motor_vehicle", "1", "1", "0", 0);
-    private TrafficLight MV2L1 = new TrafficLight("motor_vehicle", "2", "1", "0", 0);
-    private TrafficLight MV3L1 = new TrafficLight("motor_vehicle", "3", "1", "0", 0);
-    private TrafficLight MV4L1 = new TrafficLight("motor_vehicle", "4", "1", "0", 0);
-    private TrafficLight MV5L1 = new TrafficLight("motor_vehicle", "5", "1", "0", 0);
-    private TrafficLight MV5L2 = new TrafficLight("motor_vehicle", "5", "4", "0", MV5L1.getScore());
-    private TrafficLight MV6L1 = new TrafficLight("motor_vehicle", "6", "1", "0", 0);
-    private TrafficLight MV7L1 = new TrafficLight("motor_vehicle", "7", "1", "0", 0);
-    private TrafficLight MV7L2 = new TrafficLight("motor_vehicle", "7", "3", "0", MV7L1.getScore());
-    private TrafficLight MV8L1 = new TrafficLight("motor_vehicle", "8", "1", "0", 0);
-    private TrafficLight MV9L1 = new TrafficLight("motor_vehicle", "9", "1", "0", 0);
-    private TrafficLight MV10L1 = new TrafficLight("motor_vehicle", "10", "1", "0", 0);
-    private TrafficLight MV10L2 = new TrafficLight("motor_vehicle", "10", "4", "0", MV10L1.getScore());
-    private TrafficLight MV11L1 = new TrafficLight("motor_vehicle", "11", "1", "0", 0);
-    private TrafficLight MV12L1 = new TrafficLight("motor_vehicle", "12", "1", "0", 0);
-    private TrafficLight MV13L1 = new TrafficLight("motor_vehicle", "13", "1", "0", 0);
-    private TrafficLight MV13L2 = new TrafficLight("motor_vehicle", "13", "2", "0", 0);
+    private TrafficLight MV1L1 = new TrafficLight("motor_vehicle", "1", "1", "0");
+    private TrafficLight MV2L1 = new TrafficLight("motor_vehicle", "2", "1", "0");
+    private TrafficLight MV3L1 = new TrafficLight("motor_vehicle", "3", "1", "0");
+    private TrafficLight MV4L1 = new TrafficLight("motor_vehicle", "4", "1", "0");
+    private TrafficLight MV5L1 = new TrafficLight("motor_vehicle", "5", "1", "0");
+    private TrafficLight MV5L2 = new TrafficLight("motor_vehicle", "5", "2", "0");
+    private TrafficLight MV6L1 = new TrafficLight("motor_vehicle", "6", "1", "0");
+    private TrafficLight MV7L1 = new TrafficLight("motor_vehicle", "7", "1", "0");
+    private TrafficLight MV7L2 = new TrafficLight("motor_vehicle", "7", "2", "0");
+    private TrafficLight MV8L1 = new TrafficLight("motor_vehicle", "8", "1", "0");
+    private TrafficLight MV9L1 = new TrafficLight("motor_vehicle", "9", "1", "0");
+    private TrafficLight MV10L1 = new TrafficLight("motor_vehicle", "10", "1", "0");
+    private TrafficLight MV10L2 = new TrafficLight("motor_vehicle", "10", "2", "0");
+    private TrafficLight MV11L1 = new TrafficLight("motor_vehicle", "11", "1", "0");
+    private TrafficLight MV12L1 = new TrafficLight("motor_vehicle", "12", "1", "0");
+    private TrafficLight MV13L1 = new TrafficLight("motor_vehicle", "13", "1", "0");
 
-    private TrafficLight C1L1 = new TrafficLight("cycle", "1", "1", "0", 0);
-    private TrafficLight C2L1 = new TrafficLight("cycle", "2", "1", "0", 0);
-    private TrafficLight C3L1 = new TrafficLight("cycle", "3", "1", "0", 0);
-    private TrafficLight C4L1 = new TrafficLight("cycle", "4", "1", "0", 0);
-    private TrafficLight C5L1 = new TrafficLight("cycle", "5", "1", "0", 0);
-    private TrafficLight C5L2 = new TrafficLight("cycle", "5", "2", "0", 0);
+    private TrafficLight C1L1 = new TrafficLight("cycle", "1", "1", "0");
+    private TrafficLight C2L1 = new TrafficLight("cycle", "2", "1", "0");
+    private TrafficLight C3L1 = new TrafficLight("cycle", "3", "1", "0");
+    private TrafficLight C4L1 = new TrafficLight("cycle", "4", "1", "0");
 
 
-    private TrafficLight F1L1 = new TrafficLight("foot", "1", "1", "0", 0);
-    private TrafficLight F1L2 = new TrafficLight("foot", "1", "2", "0", F1L1.getScore());
-    private TrafficLight F2L1 = new TrafficLight("foot", "2", "1", "0", 0);
-    private TrafficLight F2L2 = new TrafficLight("foot", "2", "2", "0", F2L1.getScore());
-    private TrafficLight F3L1 = new TrafficLight("foot", "3", "1", "0", 0);
-    private TrafficLight F3L2 = new TrafficLight("foot", "3", "2", "0", F3L1.getScore());
-    private TrafficLight F4L1 = new TrafficLight("foot", "4", "1", "0", 0);
-    private TrafficLight F4L2 = new TrafficLight("foot", "4", "2", "0", F4L1.getScore());
-    private TrafficLight F5L1 = new TrafficLight("foot", "5", "1", "0", 0);
-    private TrafficLight F5L2 = new TrafficLight("foot", "5", "2", "0", F5L1.getScore());
-    private TrafficLight F6L1 = new TrafficLight("foot", "6", "1", "0", 0);
-    private TrafficLight F6L2 = new TrafficLight("foot", "6", "2", "0", F6L1.getScore());
-    private TrafficLight F7L1 = new TrafficLight("foot", "7", "1", "0", 0);
-    private TrafficLight F7L2 = new TrafficLight("foot", "7", "2", "0", F7L1.getScore());
-    private TrafficLight F8L1 = new TrafficLight("foot", "8", "1", "0", 0);
-    private TrafficLight F8L2 = new TrafficLight("foot", "8", "2", "0", F8L1.getScore());
-    private TrafficLight F9L1 = new TrafficLight("foot", "9", "1", "0", 0);
-    private TrafficLight F9L2 = new TrafficLight("foot", "9", "2", "0", F9L1.getScore());
+    private TrafficLight F1L1 = new TrafficLight("foot", "1", "1", "0");
+    private TrafficLight F1L2 = new TrafficLight("foot", "1", "2", "0");
+    private TrafficLight F2L1 = new TrafficLight("foot", "2", "1", "0");
+    private TrafficLight F2L2 = new TrafficLight("foot", "2", "2", "0");
+    private TrafficLight F3L1 = new TrafficLight("foot", "3", "1", "0");
+    private TrafficLight F3L2 = new TrafficLight("foot", "3", "2", "0");
+    private TrafficLight F4L1 = new TrafficLight("foot", "4", "1", "0");
+    private TrafficLight F4L2 = new TrafficLight("foot", "4", "2", "0");
+    private TrafficLight F5L1 = new TrafficLight("foot", "5", "1", "0");
+    private TrafficLight F5L2 = new TrafficLight("foot", "5", "2", "0");
+    private TrafficLight F6L1 = new TrafficLight("foot", "6", "1", "0");
+    private TrafficLight F6L2 = new TrafficLight("foot", "6", "2", "0");
+    private TrafficLight F7L1 = new TrafficLight("foot", "7", "1", "0");
+    private TrafficLight F7L2 = new TrafficLight("foot", "7", "2", "0");
+    private TrafficLight F8L1 = new TrafficLight("foot", "8", "1", "0");
+    private TrafficLight F8L2 = new TrafficLight("foot", "8", "2", "0");
 
-    private TrafficLight V1L1 = new TrafficLight("vessel", "1", "1", "0", 0);
-    private TrafficLight V2L1 = new TrafficLight("vessel", "2", "1", "0", 0);
+    private TrafficLight V1L1 = new TrafficLight("vessel", "1", "1", "0");
+    private TrafficLight V2L1 = new TrafficLight("vessel", "2", "1", "0");
 
+    private TrafficLight B1L1 = new TrafficLight("bridge", "1", "1", "0");
+    private TrafficLight B1L2 = new TrafficLight("bridge", "1", "2", "0");
+
+    private TrafficLight B1G1 = new TrafficLight("bridge", "1", "1", "0");
+    private TrafficLight B1G2 = new TrafficLight("bridge", "1", "2", "0");
 
     public InitTrafficCases(){
 
@@ -144,8 +147,8 @@ public class InitTrafficCases {
         List<TrafficLight> F8_2 = new ArrayList<>(Arrays.asList(MV1L1, MV5L1, MV5L2, MV8L1, MV9L1, MV10L1, MV10L2, MV11L1));
 
 
-        List<TrafficLight> V1 = new ArrayList<>(Arrays.asList(MV1L1));
-        List<TrafficLight> V2 = new ArrayList<>(Arrays.asList(MV1L1));
+        List<TrafficLight> V1 = new ArrayList<>(Arrays.asList(V2L1));
+        List<TrafficLight> V2 = new ArrayList<>(Arrays.asList(V1L1));
 
         groups.add(MV1);
         groups.add(MV2);
@@ -188,12 +191,29 @@ public class InitTrafficCases {
         groups.add(V1);
         groups.add(V2);
 
-        exceptionGroup.add(MV13L1);
-        exceptionGroup.add(MV13L2);
-        exceptionGroup.add(C5L1);
-        exceptionGroup.add(C5L2);
-        exceptionGroup.add(F9L1);
-        exceptionGroup.add(F9L2);
+        bridgeGroup.add(B1L1);
+        bridgeGroup.add(B1L2);
+
+        gateGroup.add(B1G1);
+        gateGroup.add(B1G2);
+
+        bridgeExcludedLights.add(MV3L1);
+        bridgeExcludedLights.add(MV7L1);
+        bridgeExcludedLights.add(MV7L2);
+        bridgeExcludedLights.add(MV10L1);
+        bridgeExcludedLights.add(MV10L2);
+
+
+
+
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(MV5L1,MV5L2)));
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(MV7L1,MV7L2)));
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(MV10L1,MV10L2)));
+
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(F1L1,F2L1,F1L2,F2L2)));
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(F3L1,F4L1,F3L2,F4L2)));
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(F5L1,F6L1,F5L2,F6L2)));
+        footGroup.add(new ArrayList<TrafficLight>(Arrays.asList(F7L1,F8L1,F7L2,F8L2)));
     }
 
     public List<List<TrafficLight>> getGroups() {
@@ -204,5 +224,17 @@ public class InitTrafficCases {
         return trafficLights;
     }
 
-    public List<TrafficLight> getExceptionGroup() { return exceptionGroup; }
+    public List<TrafficLight> getBridgeGroup() { return bridgeGroup; }
+
+    public List<TrafficLight> getBridgeExcludedLights(){
+        return bridgeExcludedLights;
+    }
+
+    public List<List<TrafficLight>> getFootGroup() {
+        return footGroup;
+    }
+
+    public List<TrafficLight> getGateGroup() {
+        return gateGroup;
+    }
 }
