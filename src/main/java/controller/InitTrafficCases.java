@@ -59,7 +59,6 @@ public class InitTrafficCases {
     private TrafficLight V2L1 = new TrafficLight("vessel", "2", "1", "0");
 
     private TrafficLight B1L1 = new TrafficLight("bridge", "1", "1", "0");
-    private TrafficLight B1L2 = new TrafficLight("bridge", "1", "2", "0");
 
     private TrafficLight B1G1 = new TrafficLight("bridge", "1", "1", "0");
     private TrafficLight B1G2 = new TrafficLight("bridge", "1", "2", "0");
@@ -192,7 +191,6 @@ public class InitTrafficCases {
         groups.add(V2);
 
         bridgeGroup.add(B1L1);
-        bridgeGroup.add(B1L2);
 
         gateGroup.add(B1G1);
         gateGroup.add(B1G2);

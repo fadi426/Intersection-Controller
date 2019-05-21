@@ -1,5 +1,6 @@
 package controller;
 
+import model.TrafficLight;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -16,12 +17,12 @@ public class MqttController implements MqttCallback {
 	private static final int qos = 1;
 	private static final MemoryPersistence persistence = new MemoryPersistence();
 	private TrafficSensorController trafficSensorController = new TrafficSensorController();
+	private TrafficLightController trafficLightController = new TrafficLightController();
 	private MqttClient sampleClient = null;
 	private String mainTopic;
 	private String tempMessage;
 	private String tempTopic;
 	private MqttConnectOptions connOpts = new MqttConnectOptions();
-	private TrafficLightController trafficLightController = new TrafficLightController();
 
 	public void subscribe(String topic) {
 		try {
@@ -33,8 +34,9 @@ public class MqttController implements MqttCallback {
 			System.out.println("Mqtt Connecting to broker: " + brokerUrl);
 			sampleClient.connect(connOpts);
 			System.out.println("Mqtt Connected");
-			trafficLightController.setInfoThread(trafficSensorController, sampleClient, mainTopic);
 
+			trafficLightController.setInfoThread(trafficSensorController, sampleClient, mainTopic);
+			onConnect();
 			sampleClient.setCallback(this);
 			sampleClient.subscribe(topic);
 
@@ -59,13 +61,35 @@ public class MqttController implements MqttCallback {
 
 	}
 
+	public void onConnect(){
+			String publishMsg = "";
+			trafficLightController.publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
+			for (TrafficLight light : trafficLightController.getInitTrafficCases().getBridgeGroup())
+
+			trafficLightController.sendMessage(light, "2");
+
+			for (TrafficLight light : trafficLightController.getInitTrafficCases().getGateGroup()){
+				trafficLightController.sendMessage(light, "0");
+			}
+	}
+
 	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
-		if (topic.contains("sensor") && message.toString() != (tempMessage) && topic != (tempTopic)) {
+		if (topic.contains("sensor")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
 			System.out.println("Mqtt topic : " + topic);
 			System.out.println("Mqtt msg : " + message.toString());
 			sensorTopicRegex(topic, message.toString());
 		}
+		if (topic.contains("simulator/onconnect")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
+			System.out.println("Mqtt topic : " + topic);
+			System.out.println("Mqtt msg : " + message.toString());
+			resetController();
+		}
 	}
+
+	private void resetController() {
+		trafficLightController.resetThread();
+	}
+
 	public void sensorTopicRegex(String topic, String message) {
 		String pattern = "(\\d+)\\/(\\w+)\\/(\\d+)\\/(\\w+)\\/(\\d+)";
 		Pattern r = Pattern.compile(pattern);

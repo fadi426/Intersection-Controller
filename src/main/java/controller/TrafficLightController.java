@@ -52,7 +52,9 @@ public class TrafficLightController extends Thread {
                 return;
             }
             Date date = new Date();
-            trafficSensorList = trafficSensorController.getTrafficSensorList().stream()
+            List<TrafficSensor> tempTrafficSensors = new ArrayList<>();
+            tempTrafficSensors.addAll(trafficSensorController.getTrafficSensorList());
+            trafficSensorList = tempTrafficSensors.stream()
                     .filter(sensor -> sensor.getState().equals("1"))
                     .collect(Collectors.toList());
 
@@ -119,10 +121,14 @@ public class TrafficLightController extends Thread {
     TimerTask orangeFootScheduler = new TimerTask() {
         @Override
         public void run() {
+            List<TrafficLight> orangeList = new ArrayList<>();
             if (redLightArr.size() > 0) {
                 for (TrafficLight light : redLightArr) {
                     if (light.getGroup().equals("foot"))
-                        sendMessage(light, "1");
+                        orangeList.add(light);
+                }
+                for (TrafficLight light : orangeList) {
+                    sendMessage(light, "1");
                 }
             }
         }
@@ -205,9 +211,6 @@ public class TrafficLightController extends Thread {
             if (!bridgeMode && !bridgeOpen && activateBridgeCounter > 5){
                 if (!clearWater)
                     return;
-                for (TrafficLight light : initTrafficCases.getGateGroup()){
-                    sendMessage(light, "0");
-                }
                 for (TrafficLight light : initTrafficCases.getBridgeGroup()) {
                     sendMessage(light, "2");
                 }
@@ -252,6 +255,9 @@ public class TrafficLightController extends Thread {
                 if (!clearWater)
                     return;
                 bridgeOpen = false;
+                for (TrafficLight light : initTrafficCases.getGateGroup()){
+                    sendMessage(light, "0");
+                }
                 String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
                 publishMessage(publishMsg, "1");
                 activateBridge = true;
@@ -414,4 +420,26 @@ public class TrafficLightController extends Thread {
         }
         lights.addAll(toAddList);
     }
+
+    public InitTrafficCases getInitTrafficCases() {
+        return initTrafficCases;
+    }
+
+    public void resetThread(){
+        greenLightArr.clear();
+        redLightArr.clear();
+        trafficSensorList.clear();
+        trafficLightList .clear();
+        vessels.clear();
+        vehicleRotationCounter = 0;
+        waitingVessel = false;
+        bridgeMode = true;
+        bridgeOpen = false;
+        clearBridge = false;
+        clearWater = false;
+        activateBridgeCounter = 0;
+        activateBridge = false;
+        trafficSensorController.getTrafficSensorList().clear();
+    }
+
 }

@@ -24,11 +24,23 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/MqttController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="340">
-              <caret line="63" column="20" selection-start-line="63" selection-start-column="20" selection-end-line="64" selection-end-column="27" />
+            <state relative-caret-position="929">
+              <caret line="77" column="56" lean-forward="true" selection-start-line="77" selection-start-column="56" selection-end-line="77" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#2127#2128#0" expanded="true" />
+                <element signature="e#3316#3317#0" expanded="true" />
+                <element signature="e#3359#3360#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$MAVEN_REPOSITORY$/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.0/org.eclipse.paho.client.mqttv3-1.2.0.jar!/org/eclipse/paho/client/mqttv3/internal/CommsCallback.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="355" selection-start-line="355" selection-end-line="355" />
             </state>
           </provider>
         </entry>
@@ -36,40 +48,13 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/TrafficLightController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="179">
-              <caret line="240" column="33" lean-forward="true" selection-start-line="240" selection-start-column="33" selection-end-line="240" selection-end-column="33" />
+            <state relative-caret-position="180">
+              <caret line="127" column="46" selection-start-line="127" selection-start-column="46" selection-end-line="127" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1824#4535#0" expanded="true" />
-                <element signature="e#4534#4535#0" expanded="true" />
-                <element signature="e#4574#4890#0" expanded="true" />
-                <element signature="e#4889#4890#0" expanded="true" />
-                <element signature="e#4929#5246#0" expanded="true" />
-                <element signature="e#5245#5246#0" expanded="true" />
-                <element signature="e#5287#5612#0" expanded="true" />
-                <element signature="e#5611#5612#0" expanded="true" />
-                <element signature="e#5648#5964#0" expanded="true" />
-                <element signature="e#5963#5964#0" expanded="true" />
-                <element signature="e#6000#6317#0" expanded="true" />
-                <element signature="e#6316#6317#0" expanded="true" />
-                <element signature="e#6355#6680#0" expanded="true" />
-                <element signature="e#6679#6680#0" expanded="true" />
-                <element signature="e#6715#7833#0" expanded="true" />
-                <element signature="e#7832#7833#0" expanded="true" />
-                <element signature="e#7868#9657#0" expanded="true" />
-                <element signature="e#9656#9657#0" expanded="true" />
-                <element signature="e#9693#10709#0" expanded="true" />
-                <element signature="e#10708#10709#0" expanded="true" />
+                <element signature="e#15633#15634#0" expanded="true" />
+                <element signature="e#15672#15673#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/Timer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="301">
-              <caret line="512" column="5" lean-forward="true" selection-start-line="512" selection-start-column="5" selection-end-line="512" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -77,16 +62,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/InitTrafficCases.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="395">
-              <caret line="65" lean-forward="true" selection-start-line="65" selection-end-line="65" />
+            <state relative-caret-position="174">
+              <caret line="192" column="30" selection-start-line="192" selection-start-column="30" selection-end-line="192" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#11060#11061#0" expanded="true" />
-                <element signature="e#11089#11090#0" expanded="true" />
-                <element signature="e#12105#12106#0" expanded="true" />
-                <element signature="e#12137#12138#0" expanded="true" />
-                <element signature="e#12094#12095#0" expanded="true" />
-                <element signature="e#12126#12127#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -137,8 +116,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/MainFrameController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="24" column="20" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+            <state relative-caret-position="289">
+              <caret line="43" column="29" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#567#568#0" expanded="true" />
@@ -151,8 +130,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/TrafficSensorController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="13" column="31" selection-start-line="13" selection-start-column="31" selection-end-line="13" selection-end-column="31" />
+            <state relative-caret-position="426">
+              <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1286#1287#0" expanded="true" />
@@ -173,17 +152,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>motor_vehicle/13/sensor/1</find>
-      <find>motor_vehicle/13</find>
-      <find>initTrafficCases.getExceptionGroup</find>
-      <find>score</find>
-      <find>highSensorArr</find>
-      <find>availableSensorArr</find>
-      <find>trafficSensorList</find>
-      <find>priorityGroup2</find>
-      <find>system</find>
-      <find>time</find>
-      <find>groups</find>
       <find>trafficLightGroups</find>
       <find>add</find>
       <find>addNextLight</find>
@@ -195,14 +163,25 @@
       <find>foot</find>
       <find>getState</find>
       <find>mode</find>
-      <find>deck</find>
       <find>bridgeCounter</find>
       <find>bridgeOpen</find>
       <find>bridgeClosed</find>
       <find>bridgeMode</find>
       <find>bridgeLightMode</find>
       <find>cleared</find>
+      <find>deck</find>
       <find>bridge</find>
+      <find>vessel</find>
+      <find>Connect</find>
+      <find>subscribe</find>
+      <find>subsc</find>
+      <find>messageArrived</find>
+      <find>simula</find>
+      <find>failed to pu</find>
+      <find>publish</find>
+      <find>trafficSensorController</find>
+      <find>gate</find>
+      <find>trafficLightController</find>
     </findStrings>
     <replaceStrings>
       <replace>String</replace>
@@ -238,12 +217,12 @@
         <option value="$PROJECT_DIR$/src/main/java/controller/MyThread.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/trafficLightRequest.java" />
         <option value="$PROJECT_DIR$/src/main/java/view/rfdf.java" />
-        <option value="$PROJECT_DIR$/src/main/java/controller/TrafficSensorController.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/TrafficSensor.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/ComponentType.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/TrafficLight.java" />
-        <option value="$PROJECT_DIR$/src/main/java/controller/MqttController.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/InitTrafficCases.java" />
+        <option value="$PROJECT_DIR$/src/main/java/controller/TrafficSensorController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/controller/MqttController.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/TrafficLightController.java" />
       </list>
     </option>
@@ -282,7 +261,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -341,10 +319,11 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558386852562" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558437055887" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
@@ -467,7 +446,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1433902" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14498934" />
       <window_info id="Structure" order="1" weight="0.24972497" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -476,8 +455,8 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49813533" visible="true" weight="0.33586133" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4084507" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49813533" weight="0.33586133" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.4084507" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -499,22 +478,6 @@
     </layout>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/controller/TrafficLightController.java</url>
-          <line>196</line>
-          <properties />
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/controller/TrafficLightController.java</url>
-          <line>327</line>
-          <properties />
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="priorityGroups.get(0).get(7)" />
@@ -605,13 +568,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.0/org.eclipse.paho.client.mqttv3-1.2.0.jar!/org/eclipse/paho/client/mqttv3/internal/CommsCallback.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="164" selection-start-line="164" selection-end-line="164" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/model/mqttQueue.java" />
     <entry file="jar://C:/Program Files (x86)/Java/jdk1.8.0_101/jre/lib/rt.jar!/java/util/ArrayList.class" />
     <entry file="jar://C:/Program Files (x86)/Java/jdk1.8.0_101/jre/lib/rt.jar!/java/util/Iterator.class" />
@@ -620,6 +576,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="14" selection-start-line="4" selection-start-column="14" selection-end-line="4" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/Timer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8126">
+          <caret line="512" column="5" selection-start-line="512" selection-start-column="5" selection-end-line="512" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -659,8 +622,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/controller/MainFrameController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="24" column="20" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+        <state relative-caret-position="289">
+          <caret line="43" column="29" selection-start-line="43" selection-start-column="16" selection-end-line="43" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#567#568#0" expanded="true" />
@@ -669,10 +632,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/controller/InitTrafficCases.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="192" column="30" selection-start-line="192" selection-start-column="30" selection-end-line="192" selection-end-column="30" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.0/org.eclipse.paho.client.mqttv3-1.2.0.jar!/org/eclipse/paho/client/mqttv3/internal/CommsCallback.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="355" selection-start-line="355" selection-end-line="355" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/controller/TrafficSensorController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="13" column="31" selection-start-line="13" selection-start-column="31" selection-end-line="13" selection-end-column="31" />
+        <state relative-caret-position="426">
+          <caret line="33" column="5" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1286#1287#0" expanded="true" />
@@ -683,63 +663,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/controller/MqttController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="63" column="20" selection-start-line="63" selection-start-column="20" selection-end-line="64" selection-end-column="27" />
+        <state relative-caret-position="929">
+          <caret line="77" column="56" lean-forward="true" selection-start-line="77" selection-start-column="56" selection-end-line="77" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#2127#2128#0" expanded="true" />
+            <element signature="e#3316#3317#0" expanded="true" />
+            <element signature="e#3359#3360#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/controller/InitTrafficCases.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="395">
-          <caret line="65" lean-forward="true" selection-start-line="65" selection-end-line="65" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#11060#11061#0" expanded="true" />
-            <element signature="e#11089#11090#0" expanded="true" />
-            <element signature="e#12105#12106#0" expanded="true" />
-            <element signature="e#12137#12138#0" expanded="true" />
-            <element signature="e#12094#12095#0" expanded="true" />
-            <element signature="e#12126#12127#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/Timer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="301">
-          <caret line="512" column="5" lean-forward="true" selection-start-line="512" selection-start-column="5" selection-end-line="512" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/controller/TrafficLightController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="179">
-          <caret line="240" column="33" lean-forward="true" selection-start-line="240" selection-start-column="33" selection-end-line="240" selection-end-column="33" />
+        <state relative-caret-position="180">
+          <caret line="127" column="46" selection-start-line="127" selection-start-column="46" selection-end-line="127" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1824#4535#0" expanded="true" />
-            <element signature="e#4534#4535#0" expanded="true" />
-            <element signature="e#4574#4890#0" expanded="true" />
-            <element signature="e#4889#4890#0" expanded="true" />
-            <element signature="e#4929#5246#0" expanded="true" />
-            <element signature="e#5245#5246#0" expanded="true" />
-            <element signature="e#5287#5612#0" expanded="true" />
-            <element signature="e#5611#5612#0" expanded="true" />
-            <element signature="e#5648#5964#0" expanded="true" />
-            <element signature="e#5963#5964#0" expanded="true" />
-            <element signature="e#6000#6317#0" expanded="true" />
-            <element signature="e#6316#6317#0" expanded="true" />
-            <element signature="e#6355#6680#0" expanded="true" />
-            <element signature="e#6679#6680#0" expanded="true" />
-            <element signature="e#6715#7833#0" expanded="true" />
-            <element signature="e#7832#7833#0" expanded="true" />
-            <element signature="e#7868#9657#0" expanded="true" />
-            <element signature="e#9656#9657#0" expanded="true" />
-            <element signature="e#9693#10709#0" expanded="true" />
-            <element signature="e#10708#10709#0" expanded="true" />
+            <element signature="e#15633#15634#0" expanded="true" />
+            <element signature="e#15672#15673#0" expanded="true" />
           </folding>
         </state>
       </provider>
