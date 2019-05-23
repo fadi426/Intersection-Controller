@@ -33,14 +33,14 @@ public class TrafficLightController extends Thread {
     boolean activateBridge = false;
 
     public void run() {
-        timer.schedule(greenLightScheduler, 0, 14000);
-        timer.schedule(orangeFootScheduler, 6000, 14000);
-        timer.schedule(orangeCycleScheduler, 8000, 14000);
-        timer.schedule(orangeVehicleScheduler, 9000, 14000);
-        timer.schedule(redFootScheduler, 12000, 14000);
-        timer.schedule(redCycleScheduler, 10000, 14000);
-        timer.schedule(redVehicleScheduler, 13000, 14000);
-        timer.schedule(bridgeScheduler, 0, 60000);
+        timer.schedule(greenLightScheduler, 0, 13000);
+        timer.schedule(orangeFootScheduler, 6000, 13000);
+        timer.schedule(orangeCycleScheduler, 8000, 13000);
+        timer.schedule(orangeVehicleScheduler, 6000, 13000);
+        timer.schedule(redFootScheduler, 12000, 13000);
+        timer.schedule(redCycleScheduler, 10000, 13000);
+        timer.schedule(redVehicleScheduler, 10000, 13000);
+        timer.schedule(bridgeScheduler, 0, 30000);
         timer.schedule(bridgeRegulator, 0, 1000);
         timer.schedule(bridgeOpenClose, 0, 1000);
     }
