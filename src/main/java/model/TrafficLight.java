@@ -49,6 +49,11 @@ public class TrafficLight implements ComponentType{
 
     }
 
+    @Override
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public void resetDate(){
         this.date = new Date();
     }

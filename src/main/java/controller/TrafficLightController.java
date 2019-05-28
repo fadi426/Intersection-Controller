@@ -1,6 +1,5 @@
 package controller;
 
-import model.ComponentType;
 import model.TrafficLight;
 import model.TrafficSensor;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -25,12 +24,12 @@ public class TrafficLightController extends Thread {
     private Timer timer = new Timer();
     private int vehicleRotationCounter = 0;
     private boolean waitingVessel = false;
-    private boolean bridgeMode = true;
     private boolean bridgeOpen = false;
-    boolean clearBridge = false;
-    boolean clearWater = false;
-    int activateBridgeCounter = 0;
-    boolean activateBridge = false;
+    private boolean clearBridge = false;
+    private boolean clearWater = false;
+    private int bridgeCounter = 0;
+    private int bridgeOpenCounter = 0;
+    private int bridgeCloseCounter = 0;
 
     public void run() {
         timer.schedule(greenLightScheduler, 0, 13000);
@@ -40,9 +39,9 @@ public class TrafficLightController extends Thread {
         timer.schedule(redFootScheduler, 12000, 13000);
         timer.schedule(redCycleScheduler, 10000, 13000);
         timer.schedule(redVehicleScheduler, 10000, 13000);
-        timer.schedule(bridgeScheduler, 0, 30000);
-        timer.schedule(bridgeRegulator, 0, 1000);
-        timer.schedule(bridgeOpenClose, 0, 1000);
+        timer.schedule(bridgeScheduler, 0, 1000);
+        timer.schedule(openBridge, 0, 1000);
+        timer.schedule(closeBridge, 0, 2000);
     }
 
     TimerTask greenLightScheduler = new TimerTask() {
@@ -190,41 +189,84 @@ public class TrafficLightController extends Thread {
         }
     };
 
-    TimerTask bridgeOpenClose = new TimerTask() {
+    TimerTask closeBridge = new TimerTask() {
         @Override
         public void run() {
-            if (activateBridge)
-                activateBridgeCounter++;
 
+            if (!bridgeOpen || !clearWater)
+                return;
 
-            if (bridgeMode && bridgeOpen && activateBridgeCounter > 5){
-                if (!clearBridge)
-                    return;
+            if (bridgeCloseCounter == 0) {
                 for (TrafficLight light : vessels) {
-                    sendMessage(light, "2");
+                    sendMessage(light, "0");
                 }
-                bridgeMode = false;
-                vessels.clear();
-                activateBridge = false;
-                activateBridgeCounter = 0;
             }
-            if (!bridgeMode && !bridgeOpen && activateBridgeCounter > 5){
-                if (!clearWater)
-                    return;
+
+            if (bridgeCloseCounter == 1) {
+                String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
+                publishMessage(publishMsg, "1");
+            }
+
+            if (bridgeCloseCounter == 6) {
+                for (TrafficLight light : initTrafficCases.getGateGroup()) {
+                    sendMessage(light, "0");
+                }
+            }
+
+            if (bridgeCloseCounter == 8) {
                 for (TrafficLight light : initTrafficCases.getBridgeGroup()) {
                     sendMessage(light, "2");
                 }
-                bridgeMode = true;
-                activateBridge = false;
-                activateBridgeCounter = 0;
+                bridgeOpen = false;
+                vessels.clear();
+                bridgeCounter = 0;
+                return;
             }
+            bridgeCloseCounter++;
+
         }
     };
 
-    TimerTask bridgeRegulator = new TimerTask() {
+    TimerTask openBridge = new TimerTask() {
         @Override
         public void run() {
 
+            if (!waitingVessel || !clearBridge)
+                return;
+
+            if (bridgeOpenCounter == 0) {
+                for (TrafficLight light : initTrafficCases.getBridgeGroup()) {
+                    sendMessage(light, "0");
+                }
+            }
+
+            if (bridgeOpenCounter == 2) {
+                for (TrafficLight light : initTrafficCases.getGateGroup()) {
+                    sendMessage(light, "1");
+                }
+            }
+
+            if (bridgeOpenCounter == 6) {
+                String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
+                publishMessage(publishMsg, "0");
+            }
+
+            if (bridgeOpenCounter == 16) {
+                for (TrafficLight light : vessels) {
+                    sendMessage(light, "2");
+                }
+                waitingVessel = false;
+                bridgeOpen = true;
+                return;
+            }
+            bridgeOpenCounter++;
+        }
+    };
+
+
+    TimerTask bridgeScheduler = new TimerTask() {
+        @Override
+        public void run() {
             if (trafficSensorController == null)
                 return;
             List<TrafficSensor> tempSensorList = new ArrayList<>();
@@ -240,36 +282,10 @@ public class TrafficLightController extends Thread {
                     clearWater = false;
             }
 
-            if (waitingVessel && !bridgeOpen){
-                if (!clearBridge)
-                    return;
-                bridgeOpen = true;
-                for (TrafficLight light : initTrafficCases.getGateGroup()){
-                    sendMessage(light, "1");
-                }
-                String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
-                publishMessage(publishMsg, "0");
-                activateBridge = true;
-            }
-            if (!waitingVessel && bridgeOpen){
-                if (!clearWater)
-                    return;
-                bridgeOpen = false;
-                for (TrafficLight light : initTrafficCases.getGateGroup()){
-                    sendMessage(light, "0");
-                }
-                String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
-                publishMessage(publishMsg, "1");
-                activateBridge = true;
-            }
-        }
-    };
+            bridgeCounter++;
 
-
-    TimerTask bridgeScheduler = new TimerTask() {
-        @Override
-        public void run() {
-
+            if(bridgeCounter != 50)
+                return;
 
             List<TrafficLight> tempTrafficLightList = new ArrayList<>();
             tempTrafficLightList.addAll(trafficLightList);
@@ -281,19 +297,9 @@ public class TrafficLightController extends Thread {
                     vessels.add(light);
                 }
             }
-
-            if (vessels.size() > 0 && !bridgeOpen) {
-                waitingVessel = true;
-                for (TrafficLight light : initTrafficCases.getBridgeGroup()) {
-                    sendMessage(light, "0");
-                }
-            } else {
-                waitingVessel = false;
-                for (TrafficLight light : initTrafficCases.getTrafficLights()) {
-                    if (light.getGroup().equals("vessel"))
-                        sendMessage(light, "0");
-                }
-            }
+            waitingVessel = true;
+            bridgeOpenCounter = 0;
+            bridgeCloseCounter = 0;
         }
     };
 
@@ -331,6 +337,8 @@ public class TrafficLightController extends Thread {
         else
             publishMsg = mainTopic + "/" + light.getGroup() + "/" + light.getGroupId() + "/" + "light/" + light.getId();
 
+
+        light.setState(mode);
         publishMessage(publishMsg, mode);
     }
 
@@ -426,6 +434,7 @@ public class TrafficLightController extends Thread {
     }
 
     public void resetThread(){
+        trafficSensorController.getTrafficSensorList().clear();
         greenLightArr.clear();
         redLightArr.clear();
         trafficSensorList.clear();
@@ -433,13 +442,14 @@ public class TrafficLightController extends Thread {
         vessels.clear();
         vehicleRotationCounter = 0;
         waitingVessel = false;
-        bridgeMode = true;
         bridgeOpen = false;
         clearBridge = false;
         clearWater = false;
-        activateBridgeCounter = 0;
-        activateBridge = false;
-        trafficSensorController.getTrafficSensorList().clear();
+        vehicleRotationCounter = 0;
+        waitingVessel = false;
+        bridgeCounter = 0;
+        bridgeOpenCounter = 0;
+        bridgeCloseCounter = 0;
     }
 
 }
