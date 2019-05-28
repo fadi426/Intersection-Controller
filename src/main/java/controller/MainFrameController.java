@@ -43,7 +43,7 @@ public class MainFrameController {
         public void actionPerformed(ActionEvent e) {
             if (mqttConnected == false) {
                 mqttController = new MqttController();
-                mqttController.subscribe(topicTF.getText());
+                mqttController.subscribe(topicTF.getText(), mqttConnectionTA);
                 mqttConnected = true;
                 mqttConnectionTA.append("MQTT Connected\n");
             }

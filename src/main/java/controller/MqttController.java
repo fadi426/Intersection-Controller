@@ -1,9 +1,13 @@
 package controller;
 
 import model.TrafficLight;
+import model.TrafficSensor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,21 +17,21 @@ public class MqttController implements MqttCallback {
 	private static final String USERNAME = "ebfphetc";
 	private static final String PASSWORD = "YZUvxaLPT5Nw";
 	private static final String clientId = "Groep8C";
-//	private static final String topic = "8/motor_vehicle/1/light/1";
 	private static final int qos = 1;
 	private static final MemoryPersistence persistence = new MemoryPersistence();
 	private TrafficSensorController trafficSensorController = new TrafficSensorController();
-	private TrafficLightController trafficLightController = new TrafficLightController();
+	private TrafficController trafficController;
 	private MqttClient sampleClient = null;
 	private String mainTopic;
 	private String tempMessage;
 	private String tempTopic;
+	JTextArea intersectionTA;
 	private MqttConnectOptions connOpts = new MqttConnectOptions();
 
-	public void subscribe(String topic) {
+	public void subscribe(String topic, JTextArea jTextArea) {
 		try {
 			mainTopic = mainTopicRegex(topic);
-			trafficLightController.start();
+			intersectionTA = jTextArea;
 			sampleClient = new MqttClient(brokerUrl, clientId, persistence);
 			connOpts.setCleanSession(true);
 			System.out.println("checking");
@@ -35,10 +39,13 @@ public class MqttController implements MqttCallback {
 			sampleClient.connect(connOpts);
 			System.out.println("Mqtt Connected");
 
-			trafficLightController.setInfoThread(trafficSensorController, sampleClient, mainTopic);
+			trafficController = new TrafficController(trafficSensorController, sampleClient, mainTopic);
+			trafficController.start();
+
 			onConnect();
 			sampleClient.setCallback(this);
 			sampleClient.subscribe(topic);
+			setLastWill();
 
 			System.out.println("Subscribed");
 			System.out.println("Listening");
@@ -63,13 +70,13 @@ public class MqttController implements MqttCallback {
 
 	public void onConnect(){
 			String publishMsg = "";
-			trafficLightController.publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
-			for (TrafficLight light : trafficLightController.getInitTrafficCases().getBridgeGroup())
+			trafficController.publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
+			for (TrafficLight light : trafficController.getTrafficLightController().getBridgeGroup())
 
-			trafficLightController.sendMessage(light, "2");
+			trafficController.sendMessage(light, "2");
 
-			for (TrafficLight light : trafficLightController.getInitTrafficCases().getGateGroup()){
-				trafficLightController.sendMessage(light, "0");
+			for (TrafficLight light : trafficController.getTrafficLightController().getGateGroup()){
+				trafficController.sendMessage(light, "0");
 			}
 	}
 
@@ -82,12 +89,23 @@ public class MqttController implements MqttCallback {
 		if (topic.contains("simulator/onconnect")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
 			System.out.println("Mqtt topic : " + topic);
 			System.out.println("Mqtt msg : " + message.toString());
-			resetController();
+			trafficController.resetThread();
 		}
-	}
+		if (topic.contains("simulator/ondisconnect")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
+			System.out.println("Mqtt topic : " + topic);
+			System.out.println("Mqtt msg : " + message.toString());
+			trafficController.sendAllLightValues();
+		}
 
-	private void resetController() {
-		trafficLightController.resetThread();
+		String connected = "Not Connected";
+		if (sampleClient.isConnected())
+			connected = "Connected";
+		intersectionTA.setText(connected + "\n");
+		intersectionTA.append("Group		GroupID		SensorID		State" + "\n");
+		for (TrafficSensor sensor : trafficSensorController.getTrafficSensorList()){
+			String sensorString = sensor.getGroup() + "		" + sensor.getGroupId() + "		" + sensor.getId() + "		" + sensor.getState() +"\n";
+			intersectionTA.append(sensorString);
+		}
 	}
 
 	public void sensorTopicRegex(String topic, String message) {
@@ -131,5 +149,10 @@ public class MqttController implements MqttCallback {
 		connOpts.setUserName(username);
 		connOpts.setPassword(password.toCharArray());
 		return connOpts;
+	}
+
+	public void setLastWill(){
+		String topic = mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "ondisconnect";
+		connOpts.setWill(topic, new byte[1] , qos, true);
 	}
 }
