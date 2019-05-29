@@ -144,6 +144,20 @@ public class TrafficController extends Thread {
         return sortedLights;
     }
 
+    public void initState(){
+        trafficLightController.getTrafficLights().stream()
+                .forEach(light -> light.setState("0"));
+
+        trafficLightController.getTrafficLights().stream()
+                .forEach(light -> sendMessage(light, light.getState()));
+
+        trafficLightController.getBridgeGroup().stream()
+                .forEach(light -> sendMessage(light, "2"));
+
+        trafficLightController.getGateGroup().stream()
+                .forEach(light -> sendMessage(light, "0"));
+    }
+
     public TrafficLightController getTrafficLightController() {
         return trafficLightController;
     }
@@ -180,17 +194,6 @@ public class TrafficController extends Thread {
         vehicleRotationCounter = 0;
         greenLightScheduler.resetScheduler();
         bridgeScheduler.resetScheduler();
-
     }
 
-    public void sendAllLightValues(){
-        trafficLightController.getTrafficLights().stream()
-                .forEach(light -> sendMessage(light, light.getState()));
-
-        trafficLightController.getBridgeGroup().stream()
-                .forEach(light -> sendMessage(light, light.getState()));
-
-        trafficLightController.getGateGroup().stream()
-                .forEach(light -> sendMessage(light, light.getState()));
-    }
 }

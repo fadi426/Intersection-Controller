@@ -31,6 +31,7 @@ public class MqttController implements MqttCallback {
 	public void subscribe(String topic, JTextArea jTextArea) {
 		try {
 			mainTopic = mainTopicRegex(topic);
+			setLastWill();
 			intersectionTA = jTextArea;
 			sampleClient = new MqttClient(brokerUrl, clientId, persistence);
 			connOpts.setCleanSession(true);
@@ -45,7 +46,6 @@ public class MqttController implements MqttCallback {
 			onConnect();
 			sampleClient.setCallback(this);
 			sampleClient.subscribe(topic);
-			setLastWill();
 
 			System.out.println("Subscribed");
 			System.out.println("Listening");
@@ -71,13 +71,7 @@ public class MqttController implements MqttCallback {
 	public void onConnect(){
 			String publishMsg = "";
 			trafficController.publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
-			for (TrafficLight light : trafficController.getTrafficLightController().getBridgeGroup())
-
-			trafficController.sendMessage(light, "2");
-
-			for (TrafficLight light : trafficController.getTrafficLightController().getGateGroup()){
-				trafficController.sendMessage(light, "0");
-			}
+			trafficController.initState();
 	}
 
 	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
@@ -90,16 +84,16 @@ public class MqttController implements MqttCallback {
 			System.out.println("Mqtt topic : " + topic);
 			System.out.println("Mqtt msg : " + message.toString());
 			trafficController.resetThread();
+			trafficController.initState();
 		}
 		if (topic.contains("simulator/ondisconnect")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
 			System.out.println("Mqtt topic : " + topic);
 			System.out.println("Mqtt msg : " + message.toString());
-			trafficController.sendAllLightValues();
 		}
 
-		String connected = "Not Connected";
+		String connected = "MQTT not Connected";
 		if (sampleClient.isConnected())
-			connected = "Connected";
+			connected = "MQTT Connected";
 		intersectionTA.setText(connected + "\n");
 		intersectionTA.append("Group		GroupID		SensorID		State" + "\n");
 		for (TrafficSensor sensor : trafficSensorController.getTrafficSensorList()){
@@ -139,7 +133,7 @@ public class MqttController implements MqttCallback {
 			sampleClient = null;
 			System.out.println("Disconnected");
 		} catch (MqttException e) {
-			System.out.println("Failed to disconnected");
+			System.out.println("Failed to disconnect");
 		}
 	}
 
@@ -152,7 +146,7 @@ public class MqttController implements MqttCallback {
 	}
 
 	public void setLastWill(){
-		String topic = mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "ondisconnect";
-		connOpts.setWill(topic, new byte[1] , qos, true);
+		String topic = mainTopic + "/features/lifecycle/controller/ondisconnect";
+		connOpts.setWill(topic, "Controller offline".getBytes(), 1, false);
 	}
 }

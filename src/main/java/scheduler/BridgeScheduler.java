@@ -93,17 +93,19 @@ public class BridgeScheduler {
             }
 
             if (bridgeOpenCounter == 2) {
-                for (TrafficLight light : trafficLightController.getGateGroup()) {
-                    trafficController.sendMessage(light, "1");
-                }
+                trafficController.sendMessage(trafficLightController.getGateGroup().get(0), "1");
             }
 
-            if (bridgeOpenCounter == 6) {
+            if (bridgeOpenCounter == 3) {
+                trafficController.sendMessage(trafficLightController.getGateGroup().get(1), "1");
+            }
+
+            if (bridgeOpenCounter == 7) {
                 String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
                 trafficController.publishMessage(publishMsg, "0");
             }
 
-            if (bridgeOpenCounter == 16) {
+            if (bridgeOpenCounter == 17) {
                 for (TrafficLight light : vessels) {
                     trafficController.sendMessage(light, "2");
                 }
