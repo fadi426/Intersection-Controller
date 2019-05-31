@@ -8,6 +8,7 @@ import model.TrafficSensor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.TimerTask;
 
 public class BridgeScheduler {
@@ -49,24 +50,40 @@ public class BridgeScheduler {
 
             if (bridgeCloseCounter == 0) {
                 for (TrafficLight light : vessels) {
-                    trafficController.sendMessage(light, "0");
+                    trafficController.sendTrafficCommand(light, "0");
                 }
+
+                List<TrafficLight> tempTrafficLightList = new ArrayList<>();
+                tempTrafficLightList.addAll(trafficLightList);
+                TrafficLight oppositeVesselLight = null;
+                for (TrafficLight light : tempTrafficLightList) {
+                    if (light.getGroup().equals("vessel") && light != vessels.get(0)) {
+                        trafficController.sendTrafficCommand(light, "2");
+                        oppositeVesselLight = light;
+                    }
+                }
+                vessels.clear();
+                if (oppositeVesselLight != null)
+                    vessels.add(oppositeVesselLight);
             }
 
-            if (bridgeCloseCounter == 1) {
+            if (bridgeCloseCounter == 2) {
+                for (TrafficLight light : vessels) {
+                    trafficController.sendTrafficCommand(light, "0");
+                }
                 String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
-                trafficController.publishMessage(publishMsg, "1");
-            }
-
-            if (bridgeCloseCounter == 6) {
-                for (TrafficLight light : trafficLightController.getGateGroup()) {
-                    trafficController.sendMessage(light, "0");
-                }
+                trafficController.getMqttController().publishMessage(publishMsg, "1");
             }
 
             if (bridgeCloseCounter == 8) {
+                for (TrafficLight light : trafficLightController.getGateGroup()) {
+                    trafficController.sendTrafficCommand(light, "0");
+                }
+            }
+
+            if (bridgeCloseCounter == 10) {
                 for (TrafficLight light : trafficLightController.getBridgeGroup()) {
-                    trafficController.sendMessage(light, "2");
+                    trafficController.sendTrafficCommand(light, "2");
                 }
                 bridgeOpen = false;
                 vessels.clear();
@@ -88,26 +105,26 @@ public class BridgeScheduler {
 
             if (bridgeOpenCounter == 0) {
                 for (TrafficLight light : trafficLightController.getBridgeGroup()) {
-                    trafficController.sendMessage(light, "0");
+                    trafficController.sendTrafficCommand(light, "0");
                 }
             }
 
             if (bridgeOpenCounter == 2) {
-                trafficController.sendMessage(trafficLightController.getGateGroup().get(0), "1");
+                trafficController.sendTrafficCommand(trafficLightController.getGateGroup().get(0), "1");
             }
 
             if (bridgeOpenCounter == 3) {
-                trafficController.sendMessage(trafficLightController.getGateGroup().get(1), "1");
+                trafficController.sendTrafficCommand(trafficLightController.getGateGroup().get(1), "1");
             }
 
             if (bridgeOpenCounter == 7) {
                 String publishMsg = mainTopic + "/" + "bridge" + "/" + "1" + "/" + "deck/" + "1";
-                trafficController.publishMessage(publishMsg, "0");
+                trafficController.getMqttController().publishMessage(publishMsg, "0");
             }
 
             if (bridgeOpenCounter == 17) {
                 for (TrafficLight light : vessels) {
-                    trafficController.sendMessage(light, "2");
+                    trafficController.sendTrafficCommand(light, "2");
                 }
                 waitingVessel = false;
                 bridgeOpen = true;
@@ -166,5 +183,41 @@ public class BridgeScheduler {
         bridgeCounter = 0;
         bridgeOpenCounter = 0;
         bridgeCloseCounter = 0;
+    }
+
+    public void addAvailableLight(List<TrafficLight> lights, TrafficLight light) {
+        if (lights.contains(light))
+            return;
+
+        for (TrafficLight l : lights) {
+            for (int i = 0; i < trafficLightController.getTrafficLights().size(); i++) {
+                TrafficLight groupLight = trafficLightController.getTrafficLights().get(i);
+                if (groupLight.getGroupId().equals(l.getGroupId()) && groupLight.getGroup().equals(l.getGroup()) && groupLight.getId().equals(l.getId())) {
+
+                    if (trafficLightController.getGroups().get(i).contains(light))
+                        return;
+
+                    if (trafficLightController.getBridgeGroup().contains(light)) {
+                        return;
+                    }
+                }
+            }
+        }
+
+        lights.add(light);
+    }
+
+    public TrafficLight findPriorityLight(List<Long> lightTimes) {
+        List<TrafficLight> priorityGroups = new ArrayList<>();
+        Long longestWaitingTime = trafficController.getMax(lightTimes);
+        for (int i = 0; i < lightTimes.size(); i++) {
+            Long time = lightTimes.get(i);
+            if (time == longestWaitingTime) {
+                priorityGroups.add(trafficLightList.get(i));
+            }
+        }
+        int randomInt = new Random().nextInt(priorityGroups.size());
+        TrafficLight priorityLight = priorityGroups.get(randomInt);
+        return priorityLight;
     }
 }

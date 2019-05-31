@@ -1,6 +1,8 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class TrafficLight implements ComponentType{
 
@@ -9,23 +11,23 @@ public class TrafficLight implements ComponentType{
     private String id;
     private String state;
     private Date date;
+    private List<String> sensorIds = new ArrayList<>();
 
-    public TrafficLight(String group, String groupId, String id, String state) {
+    public TrafficLight(String group, String groupId, String id, String state, List<String> sensorIds) {
         this.id = id;
         this.state = state;
         this.groupId = groupId;
         this.group = group;
         this.date = new Date();
+        this.sensorIds = sensorIds;
     }
-    @Override
+
     public String getId() {
         return id;
     }
 
-    @Override
     public String getGroupId() { return groupId; }
 
-    @Override
     public String getGroup() {
         return group;
     }
@@ -34,22 +36,12 @@ public class TrafficLight implements ComponentType{
         return state;
     }
 
-    @Override
-    public void setId(String id) {
+    public void setId(String id) { this.id = id; }
 
-    }
+    public void setGroup(String group) { this.group = group; }
 
-    @Override
-    public void setGroup(String group) {
+    public void setGroupId(String groupId) { this.groupId = groupId; }
 
-    }
-
-    @Override
-    public void setGroupId(String groupId) {
-
-    }
-
-    @Override
     public void setState(String state) {
         this.state = state;
     }
@@ -60,5 +52,9 @@ public class TrafficLight implements ComponentType{
 
     public Date getDate() {
         return date;
+    }
+
+    public List<String> getSensorIds() {
+        return sensorIds;
     }
 }

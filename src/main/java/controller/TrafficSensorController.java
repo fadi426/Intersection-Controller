@@ -1,6 +1,5 @@
 package controller;
 
-import model.TrafficLight;
 import model.TrafficSensor;
 
 import java.util.*;

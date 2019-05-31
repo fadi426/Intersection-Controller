@@ -2,9 +2,6 @@ package controller;
 
 import model.TrafficLight;
 import model.TrafficSensor;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import scheduler.BridgeScheduler;
 import scheduler.GreenLightScheduler;
 import scheduler.OrangeLightScheduler;
@@ -19,20 +16,18 @@ public class TrafficController extends Thread {
     private List<TrafficSensor> trafficSensorList = new ArrayList<>();
     private List<TrafficLight> trafficLightList = new ArrayList<>();
 
-    private MqttClient mqttClient;
+    private MqttController mqttController;
     private String mainTopic;
 
     private Timer timer = new Timer();
-    private int vehicleRotationCounter = 0;
 
     private GreenLightScheduler greenLightScheduler;
     private OrangeLightScheduler orangeLightScheduler;
     private RedLightScheduler redLightScheduler;
     private BridgeScheduler bridgeScheduler;
 
-    TrafficController(TrafficSensorController trafficSensorController, MqttClient mqttClient, String mainTopic) {
+    TrafficController(TrafficSensorController trafficSensorController, String mainTopic) {
         this.trafficSensorController = trafficSensorController;
-        this.mqttClient = mqttClient;
         this.mainTopic = mainTopic;
         this.greenLightScheduler = new GreenLightScheduler(this);
         this.orangeLightScheduler = new OrangeLightScheduler(this);
@@ -53,15 +48,7 @@ public class TrafficController extends Thread {
         timer.schedule(bridgeScheduler.closeBridge, 0, 2000);
     }
 
-    public void publishMessage(String topic, String content) {
-        MqttMessage message = new MqttMessage(content.getBytes());
-        message.setQos(1);
-        try {
-            mqttClient.publish(topic, message);
-        } catch (MqttException e) {
-            System.out.println("Failed to publish message");
-        }
-    }
+
 
     public static Long getMax(List<Long> inputArray) {
         Long maxValue = inputArray.get(0);
@@ -73,7 +60,9 @@ public class TrafficController extends Thread {
         return (maxValue);
     }
 
-    public void sendMessage(TrafficLight light, String mode) {
+    public void sendTrafficCommand(TrafficLight light, String mode) {
+        if (mqttController == null)
+            return;
         String publishMsg = "";
         if (trafficLightController.getGateGroup().contains(light))
             publishMsg = mainTopic + "/" + light.getGroup() + "/" + light.getGroupId() + "/" + "gate/" + light.getId();
@@ -82,43 +71,7 @@ public class TrafficController extends Thread {
 
 
         light.setState(mode);
-        publishMessage(publishMsg, mode);
-    }
-
-    public void addAvailableLight(List<TrafficLight> lights, TrafficLight light) {
-        if (lights.contains(light))
-            return;
-
-        for (TrafficLight l : lights) {
-            for (int i = 0; i < trafficLightController.getTrafficLights().size(); i++) {
-                TrafficLight groupLight = trafficLightController.getTrafficLights().get(i);
-                if (groupLight.getGroupId().equals(l.getGroupId()) && groupLight.getGroup().equals(l.getGroup()) && groupLight.getId().equals(l.getId())) {
-
-                    if (trafficLightController.getGroups().get(i).contains(light))
-                        return;
-
-                    if (trafficLightController.getBridgeGroup().contains(light)) {
-                        return;
-                    }
-                }
-            }
-        }
-
-        lights.add(light);
-    }
-
-    public TrafficLight findPriorityLight(List<Long> lightTimes) {
-        List<TrafficLight> priorityGroups = new ArrayList<>();
-        Long longestWaitingTime = getMax(lightTimes);
-        for (int i = 0; i < lightTimes.size(); i++) {
-            Long time = lightTimes.get(i);
-            if (time == longestWaitingTime) {
-                priorityGroups.add(trafficLightList.get(i));
-            }
-        }
-        int randomInt = new Random().nextInt(priorityGroups.size());
-        TrafficLight priorityLight = priorityGroups.get(randomInt);
-        return priorityLight;
+        mqttController.publishMessage(publishMsg, mode);
     }
 
     public List<TrafficLight> sortLightArr(List<Long> times) {
@@ -149,13 +102,32 @@ public class TrafficController extends Thread {
                 .forEach(light -> light.setState("0"));
 
         trafficLightController.getTrafficLights().stream()
-                .forEach(light -> sendMessage(light, light.getState()));
+                .forEach(light -> sendTrafficCommand(light, light.getState()));
 
         trafficLightController.getBridgeGroup().stream()
-                .forEach(light -> sendMessage(light, "2"));
+                .forEach(light -> sendTrafficCommand(light, "2"));
 
         trafficLightController.getGateGroup().stream()
-                .forEach(light -> sendMessage(light, "0"));
+                .forEach(light -> sendTrafficCommand(light, "0"));
+    }
+
+    public void addLight(TrafficLight light, List<TrafficLight> list){
+        if (light.getGroup().equals("foot")){
+            if (trafficLightController.getFirstFootLight().contains(light)){
+                int positionOfLight = trafficLightController.getFirstFootLight().indexOf(light);
+                for (TrafficLight l :trafficLightController.getFootPairs().get(positionOfLight)){
+                    if (list.contains(l))
+                        continue;
+                    list.add(l);
+                }
+                return;
+            }
+            else {
+                list.add(light);
+                return;
+            }
+        }
+        list.add(light);
     }
 
     public TrafficLightController getTrafficLightController() {
@@ -178,12 +150,16 @@ public class TrafficController extends Thread {
         return redLightArr;
     }
 
-    public int getVehicleRotationCounter() {
-        return vehicleRotationCounter;
-    }
-
     public String getMainTopic(){
         return mainTopic;
+    }
+
+    public MqttController getMqttController() {
+        return mqttController;
+    }
+
+    public void setMqttController(MqttController mqttController){
+        this.mqttController = mqttController;
     }
 
     public void resetThread(){
@@ -191,9 +167,7 @@ public class TrafficController extends Thread {
         redLightArr.clear();
         trafficSensorList.clear();
         trafficLightList .clear();
-        vehicleRotationCounter = 0;
         greenLightScheduler.resetScheduler();
         bridgeScheduler.resetScheduler();
     }
-
 }

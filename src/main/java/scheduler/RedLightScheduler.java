@@ -44,7 +44,7 @@ public class RedLightScheduler {
                     orangeList.add(light);
             }
             for (TrafficLight light : orangeList) {
-                trafficController.sendMessage(light, "0");
+                trafficController.sendTrafficCommand(light, "0");
             }
         }
     }

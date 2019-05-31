@@ -1,55 +1,46 @@
 package controller;
 
-import model.TrafficLight;
 import model.TrafficSensor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MqttController implements MqttCallback {
 
 	private static final String brokerUrl = "tcp://broker.0f.nl:1883";
-	private static final String USERNAME = "ebfphetc";
-	private static final String PASSWORD = "YZUvxaLPT5Nw";
 	private static final String clientId = "Groep8C";
-	private static final int qos = 1;
 	private static final MemoryPersistence persistence = new MemoryPersistence();
-	private TrafficSensorController trafficSensorController = new TrafficSensorController();
+	private TrafficSensorController trafficSensorController;
 	private TrafficController trafficController;
-	private MqttClient sampleClient = null;
+	private MqttClient mqttClient = null;
 	private String mainTopic;
-	private String tempMessage;
-	private String tempTopic;
-	JTextArea intersectionTA;
+	private boolean simulatorConnectionLost = false;
+	JTextArea jTextArea;
 	private MqttConnectOptions connOpts = new MqttConnectOptions();
 
-	public void subscribe(String topic, JTextArea jTextArea) {
+	public MqttController(String topic, JTextArea jTextArea, TrafficController trafficController, TrafficSensorController trafficSensorController) {
 		try {
-			mainTopic = mainTopicRegex(topic);
+			this.trafficController = trafficController;
+			this.trafficSensorController = trafficSensorController;
+			mainTopic = topic;
 			setLastWill();
-			intersectionTA = jTextArea;
-			sampleClient = new MqttClient(brokerUrl, clientId, persistence);
+			this.jTextArea = jTextArea;
+			mqttClient = new MqttClient(brokerUrl, clientId, persistence);
 			connOpts.setCleanSession(true);
 			System.out.println("checking");
 			System.out.println("Mqtt Connecting to broker: " + brokerUrl);
-			sampleClient.connect(connOpts);
+			mqttClient.connect(connOpts);
 			System.out.println("Mqtt Connected");
 
-			trafficController = new TrafficController(trafficSensorController, sampleClient, mainTopic);
-			trafficController.start();
-
 			onConnect();
-			sampleClient.setCallback(this);
-			sampleClient.subscribe(topic);
+			mqttClient.setCallback(this);
+			mqttClient.subscribe(topic + "/#");
 
 			System.out.println("Subscribed");
 			System.out.println("Listening");
-			//Scheduler(topic);
 		} catch (MqttException me) {
 			System.out.println("Mqtt reason " + me.getReasonCode());
 			System.out.println("Mqtt msg " + me.getMessage());
@@ -69,36 +60,50 @@ public class MqttController implements MqttCallback {
 	}
 
 	public void onConnect(){
+            trafficController.setMqttController(this);
+			trafficController.resetThread();
 			String publishMsg = "";
-			trafficController.publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
+			publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
 			trafficController.initState();
 	}
 
+    public void publishMessage(String topic, String content) {
+	    if (mqttClient == null || simulatorConnectionLost == true || trafficController.getMqttController() == null)
+	        return;
+        MqttMessage message = new MqttMessage(content.getBytes());
+        message.setQos(1);
+        try {
+            mqttClient.publish(topic, message);
+        } catch (MqttException e) {
+            System.out.println("Failed to publish message");
+        }
+    }
+
 	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
-		if (topic.contains("sensor")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
-			System.out.println("Mqtt topic : " + topic);
-			System.out.println("Mqtt msg : " + message.toString());
+		if (topic.contains("sensor")) {
 			sensorTopicRegex(topic, message.toString());
 		}
-		if (topic.contains("simulator/onconnect")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
+		if (topic.contains("simulator/onconnect")) {
 			System.out.println("Mqtt topic : " + topic);
 			System.out.println("Mqtt msg : " + message.toString());
 			trafficController.resetThread();
 			trafficController.initState();
+			simulatorConnectionLost = false;
 		}
-		if (topic.contains("simulator/ondisconnect")&& message.toString() != (tempMessage) && topic != (tempTopic)) {
+		if (topic.contains("simulator/ondisconnect")) {
 			System.out.println("Mqtt topic : " + topic);
 			System.out.println("Mqtt msg : " + message.toString());
+			simulatorConnectionLost = true;
 		}
 
 		String connected = "MQTT not Connected";
-		if (sampleClient.isConnected())
+		if (mqttClient.isConnected())
 			connected = "MQTT Connected";
-		intersectionTA.setText(connected + "\n");
-		intersectionTA.append("Group		GroupID		SensorID		State" + "\n");
+		jTextArea.setText(connected + "\n");
+		jTextArea.append("Group		GroupID		SensorID		State" + "\n");
 		for (TrafficSensor sensor : trafficSensorController.getTrafficSensorList()){
 			String sensorString = sensor.getGroup() + "		" + sensor.getGroupId() + "		" + sensor.getId() + "		" + sensor.getState() +"\n";
-			intersectionTA.append(sensorString);
+			jTextArea.append(sensorString);
 		}
 	}
 
@@ -115,38 +120,24 @@ public class MqttController implements MqttCallback {
 		}
 	}
 
-	public String mainTopicRegex(String topic){
-		String pattern = "(\\d+)(.+)";
-		Pattern r = Pattern.compile(pattern);
-		Matcher m = r.matcher(topic);
-		if (m.find()){
-			return m.group(1);
-		}
-		System.out.println("failed to parse topic, redirecting to default 8");
-		return "8";
-	}
-
-
 	public void disconnectMqtt(){
 		try {
-			sampleClient.disconnect();
-			sampleClient = null;
+            sendLastWill();
+			mqttClient.disconnect();
+			mqttClient = null;
 			System.out.println("Disconnected");
 		} catch (MqttException e) {
 			System.out.println("Failed to disconnect");
 		}
 	}
 
-	private static MqttConnectOptions setUpConnectionOptions(String username, String password) {
-		MqttConnectOptions connOpts = new MqttConnectOptions();
-		connOpts.setCleanSession(true);
-		connOpts.setUserName(username);
-		connOpts.setPassword(password.toCharArray());
-		return connOpts;
-	}
-
 	public void setLastWill(){
 		String topic = mainTopic + "/features/lifecycle/controller/ondisconnect";
 		connOpts.setWill(topic, "Controller offline".getBytes(), 1, false);
 	}
+
+	public void sendLastWill(){
+        String topic = mainTopic + "/features/lifecycle/controller/ondisconnect";
+	    publishMessage(topic, "");
+    }
 }
