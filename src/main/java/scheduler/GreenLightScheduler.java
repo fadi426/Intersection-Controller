@@ -63,7 +63,7 @@ public class GreenLightScheduler {
                 for (TrafficLight light : trafficLightList) {
                     long diff = date.getTime() - light.getDate().getTime();
                     long diffInSeconds = diff / 1000;
-                    long extraPriorityTime = calculatePriorityPoints(light)*20;
+                    long extraPriorityTime = calculatePriorityPoints(light);
                     lightTimes.add(diffInSeconds  + extraPriorityTime);
                 }
 
@@ -120,7 +120,7 @@ public class GreenLightScheduler {
             if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && light.getSensorIds().contains(sensor.getId()))
                 priorityPoints++;
         }
-        return priorityPoints;
+        return priorityPoints*30;
     }
 
     public void addAvailableLight(List<TrafficLight> lights, TrafficLight light) {

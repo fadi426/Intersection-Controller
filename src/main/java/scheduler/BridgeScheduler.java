@@ -155,7 +155,7 @@ public class BridgeScheduler {
 
             bridgeCounter++;
 
-            if(bridgeCounter != 50)
+            if(bridgeCounter != 60)
                 return;
 
             List<TrafficLight> tempTrafficLightList = new ArrayList<>();
