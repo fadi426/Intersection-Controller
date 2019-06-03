@@ -92,7 +92,6 @@ public class MqttController implements MqttCallback {
 			trafficController.resetThread();
 			trafficController.initState();
 			simulatorConnectionLost = false;
-			trafficController.initState();
 		}
 		if (topic.contains("simulator/ondisconnect")) {
 			System.out.println("Mqtt topic : " + topic);

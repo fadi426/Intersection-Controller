@@ -90,7 +90,7 @@ public class BridgeScheduler {
                 bridgeCounter = 0;
                 closeCounter = 0;
                 bridgeOpenCounter = 0;
-                bridgeCloseCounter = 0;
+                waitingVessel = false;
                 return;
             }
             bridgeCloseCounter++;
@@ -131,6 +131,8 @@ public class BridgeScheduler {
                 for (TrafficLight light : vessels) {
                     trafficController.sendTrafficCommand(light, "2");
                 }
+                bridgeOpenCounter++;
+                bridgeCloseCounter = 0;
                 waitingVessel = false;
                 bridgeOpen = true;
                 return;
