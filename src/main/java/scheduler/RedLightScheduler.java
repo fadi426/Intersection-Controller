@@ -36,6 +36,10 @@ public class RedLightScheduler {
         }
     };
 
+    /**
+     * Turns the lights in the redLightArray to red
+     * @param trafficUser is the group of the light
+     */
     public void changeLightToRed(String trafficUser){
         List<TrafficLight> orangeList = new ArrayList<>();
         if (redLightArr.size() > 0) {

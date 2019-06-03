@@ -36,6 +36,9 @@ public class BridgeScheduler {
         this.trafficLightList = trafficController.getTrafficLightList();
     }
 
+    /**
+     * A timertast to close the bridge, opens the gates, turn the vessel lights red and turns the deck vehicles on green.
+     */
     public TimerTask closeBridge = new TimerTask() {
         @Override
         public void run() {
@@ -91,6 +94,7 @@ public class BridgeScheduler {
                 closeCounter = 0;
                 bridgeOpenCounter = 0;
                 waitingVessel = false;
+                bridgeCloseCounter++;
                 return;
             }
             bridgeCloseCounter++;
@@ -98,6 +102,9 @@ public class BridgeScheduler {
         }
     };
 
+    /**
+     * A timertast to open the bridge, close the gates, turn the vessel lights green and turns the deck vehicles on red.
+     */
     public TimerTask openBridge = new TimerTask() {
         @Override
         public void run() {
@@ -107,7 +114,8 @@ public class BridgeScheduler {
 
             if (bridgeOpenCounter == 0) {
                 for (TrafficLight light : trafficLightController.getBridgeGroup()) {
-                    trafficController.sendTrafficCommand(light, "0");
+                    if (!light.getState().equals("0"))
+                        trafficController.sendTrafficCommand(light, "0");
                 }
             }
 
@@ -142,6 +150,9 @@ public class BridgeScheduler {
     };
 
 
+    /**
+     * A timertask to start the open/close bridge process
+     */
     public TimerTask bridgeRegulator = new TimerTask() {
         @Override
         public void run() {
@@ -181,6 +192,10 @@ public class BridgeScheduler {
 
         }
     };
+
+    /**
+     * Resets this specific scheduler
+     */
     public void resetScheduler(){
         vessels.clear();
         waitingVessel = false;

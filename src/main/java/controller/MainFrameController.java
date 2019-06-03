@@ -10,6 +10,9 @@ import java.awt.event.WindowEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ */
 public class MainFrameController {
 
     private MainFrame mainFrame;
@@ -32,6 +35,10 @@ public class MainFrameController {
         mainFrame.setVisible(true);
     }
 
+
+    /**
+     * Add the java swwing GUI components from the MainFrame
+     */
     private void initComponents() {
         mainFrame = new MainFrame();
         connectBtn = mainFrame.getConnectBtn();
@@ -52,6 +59,9 @@ public class MainFrameController {
         });
     }
 
+    /**
+     * Starts the application when the connect button has been clicked
+     */
     private class connectBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -69,6 +79,10 @@ public class MainFrameController {
             }
         }
     }
+
+    /**
+     * Stops the mqtt class to listen/send messages to the broker
+     */
     private class disconnectBtnListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -78,6 +92,11 @@ public class MainFrameController {
         }
     }
 
+
+    /**
+     * @param topic is the mainTopic of the used channel on the broker
+     * @return the channel id that has been given to the input field in the GUI
+     */
     public String mainTopicRegex(String topic){
         String pattern = "(\\d+)(.+)";
         Pattern r = Pattern.compile(pattern);

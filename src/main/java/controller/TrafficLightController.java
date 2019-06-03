@@ -9,7 +9,7 @@ import java.util.List;
 public class TrafficLightController {
 
     private List<TrafficLight> trafficLights = new ArrayList<>();
-    private List<List<TrafficLight>> groups = new ArrayList<>();
+    private List<List<TrafficLight>> excludedGroups = new ArrayList<>();
     private List<TrafficLight> bridgeExcludedLights = new ArrayList<>();
     private List<List<TrafficLight>> footPairs = new ArrayList<>();
     private List<TrafficLight> gateGroup = new ArrayList<>();
@@ -152,47 +152,47 @@ public class TrafficLightController {
 
         List<TrafficLight> B1_1 = new ArrayList<>(Arrays.asList());
 
-        groups.add(MV1);
-        groups.add(MV2);
-        groups.add(MV3);
-        groups.add(MV4);
-        groups.add(MV5);
-        groups.add(MV5_2);
-        groups.add(MV6);
-        groups.add(MV7);
-        groups.add(MV7_2);
-        groups.add(MV8);
-        groups.add(MV9);
-        groups.add(MV10);
-        groups.add(MV10_2);
-        groups.add(MV11);
-        groups.add(MV12);
+        excludedGroups.add(MV1);
+        excludedGroups.add(MV2);
+        excludedGroups.add(MV3);
+        excludedGroups.add(MV4);
+        excludedGroups.add(MV5);
+        excludedGroups.add(MV5_2);
+        excludedGroups.add(MV6);
+        excludedGroups.add(MV7);
+        excludedGroups.add(MV7_2);
+        excludedGroups.add(MV8);
+        excludedGroups.add(MV9);
+        excludedGroups.add(MV10);
+        excludedGroups.add(MV10_2);
+        excludedGroups.add(MV11);
+        excludedGroups.add(MV12);
 
-        groups.add(C1);
-        groups.add(C2);
-        groups.add(C3);
-        groups.add(C4);
+        excludedGroups.add(C1);
+        excludedGroups.add(C2);
+        excludedGroups.add(C3);
+        excludedGroups.add(C4);
 
-        groups.add(F1_1);
-        groups.add(F1_2);
-        groups.add(F2_1);
-        groups.add(F2_2);
-        groups.add(F3_1);
-        groups.add(F3_2);
-        groups.add(F4_1);
-        groups.add(F4_2);
-        groups.add(F5_1);
-        groups.add(F5_2);
-        groups.add(F6_1);
-        groups.add(F6_2);
-        groups.add(F7_1);
-        groups.add(F7_2);
-        groups.add(F8_1);
-        groups.add(F8_2);
+        excludedGroups.add(F1_1);
+        excludedGroups.add(F1_2);
+        excludedGroups.add(F2_1);
+        excludedGroups.add(F2_2);
+        excludedGroups.add(F3_1);
+        excludedGroups.add(F3_2);
+        excludedGroups.add(F4_1);
+        excludedGroups.add(F4_2);
+        excludedGroups.add(F5_1);
+        excludedGroups.add(F5_2);
+        excludedGroups.add(F6_1);
+        excludedGroups.add(F6_2);
+        excludedGroups.add(F7_1);
+        excludedGroups.add(F7_2);
+        excludedGroups.add(F8_1);
+        excludedGroups.add(F8_2);
 
-        groups.add(V1);
-        groups.add(V2);
-        groups.add(B1_1);
+        excludedGroups.add(V1);
+        excludedGroups.add(V2);
+        excludedGroups.add(B1_1);
 
         gateGroup.add(B1G1);
         gateGroup.add(B1G2);
@@ -222,8 +222,8 @@ public class TrafficLightController {
         footPairs.add(new ArrayList<>(Arrays.asList(F7L1, F7L2, F8L1, F8L2)));
     }
 
-    public List<List<TrafficLight>> getGroups() {
-        return groups;
+    public List<List<TrafficLight>> getExcludedGroups() {
+        return excludedGroups;
     }
 
     public List<TrafficLight> getTrafficLights() {
@@ -239,17 +239,42 @@ public class TrafficLightController {
         return bridgeGroup;
     }
 
+    /**
+     * @return a list of the lights that can not be on green at the same time
+     */
     public List<TrafficLight> getBridgeExcludedLights(){
         return bridgeExcludedLights;
     }
 
+    /**
+     * @return a list of lights of the pairs of the foot traffic users that are needed to make a foot user walk from 1 side of the road to the other side
+     */
     public List<List<TrafficLight>> getFootPairs() {
         return footPairs;
     }
 
+    /**
+     * @return a list of the lights of the gates of the bridge
+     */
     public List<TrafficLight> getGateGroup() {
         return gateGroup;
     }
 
+    /**
+     * @return a list of the first lights that a foot user will hit when wanting to walk from 1 side to the other
+     */
     public List<TrafficLight> getFirstFootLight() { return firstFootLight; }
+
+    /**
+     * @param light is the to be added light to the trafficLightList
+     * @return a list of all the lights with the same group and groupID
+     */
+    public List<TrafficLight> findDoubleLight(TrafficLight light) {
+        List<TrafficLight> lights = new ArrayList<>();
+        for (TrafficLight l : trafficLights){
+            if (light.getGroup().equals(l.getGroup()) && light.getGroupId().equals(l.getGroupId()))
+                lights.add(l);
+        }
+        return lights;
+    }
 }

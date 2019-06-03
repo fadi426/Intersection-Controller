@@ -59,6 +59,9 @@ public class MqttController implements MqttCallback {
 
 	}
 
+	/**
+	 * Resets the scheduler threads and sends the initial states of the intersection together with the "onconnect" message
+	 */
 	public void onConnect(){
             trafficController.setMqttController(this);
 			trafficController.resetThread();
@@ -67,6 +70,10 @@ public class MqttController implements MqttCallback {
 			trafficController.initState();
 	}
 
+	/**
+	 * @param topic is the main topic of the channel that is getting used
+	 * @param content is the message that has to be sent to the broker
+	 */
     public void publishMessage(String topic, String content) {
 	    if (mqttClient == null || simulatorConnectionLost == true || trafficController.getMqttController() == null)
 	        return;
@@ -79,6 +86,11 @@ public class MqttController implements MqttCallback {
         }
     }
 
+	/**
+	 * @param topic the main topic of the channel of the received message
+	 * @param message the message content that has been received
+	 * @throws InterruptedException when the mqtt client stops working
+	 */
 	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
 		if (topic.contains("sensor")) {
 			sensorTopicRegex(topic, message.toString());
@@ -109,6 +121,10 @@ public class MqttController implements MqttCallback {
 		}
 	}
 
+	/**
+	 * @param topic is the topic of the sensor
+	 * @param message is the state of the given sensor
+	 */
 	public void sensorTopicRegex(String topic, String message) {
 		String pattern = "(\\d+)\\/(\\w+)\\/(\\d+)\\/(\\w+)\\/(\\d+)";
 		Pattern r = Pattern.compile(pattern);
@@ -122,6 +138,9 @@ public class MqttController implements MqttCallback {
 		}
 	}
 
+	/**
+	 *  Disconnects the mqtt clients and sends a last will to let the simulator know that the connection has been lost
+	 */
 	public void disconnectMqtt(){
 		try {
             sendLastWill();
@@ -133,11 +152,17 @@ public class MqttController implements MqttCallback {
 		}
 	}
 
+	/**
+	 * Sets the last will on the broker, so even when the network connection has been lost, the "ondisconnect" message will be sent to the simulator
+	 */
 	public void setLastWill(){
 		String topic = mainTopic + "/features/lifecycle/controller/ondisconnect";
 		connOpts.setWill(topic, "Controller offline".getBytes(), 1, false);
 	}
 
+	/**
+	 * Sends the last will message
+	 */
 	public void sendLastWill(){
         String topic = mainTopic + "/features/lifecycle/controller/ondisconnect";
 	    publishMessage(topic, "");

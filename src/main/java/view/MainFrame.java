@@ -12,6 +12,9 @@ public class MainFrame extends JFrame{
     private JPanel mainPanel;
     private JTextField topicTF;
 
+    /**
+     * Sets the settings of the Jpanel
+     */
     public MainFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().add(mainPanel);

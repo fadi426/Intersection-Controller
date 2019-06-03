@@ -28,6 +28,11 @@ public class GreenLightScheduler {
         this.redLightArr = trafficController.getRedLightArr();
     }
 
+    /**
+     * A timertask that checks which one of the sensors are high, and turn lights green depending on the time and priority system.
+     * The longer the light has been on red, the more priority it gets.
+     * The more sensors of that light have been triggered, the more priority it gets
+     */
     public TimerTask scheduler = new TimerTask() {
         @Override
         public void run() {
@@ -48,9 +53,11 @@ public class GreenLightScheduler {
             for (TrafficSensor sensor : trafficSensorList) {
                 for (TrafficLight light : trafficLightController.getTrafficLights()) {
                     if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && light.getSensorIds().contains(sensor.getId())) {
-                        if (trafficLightList.contains(light))
-                            continue;
-                        trafficLightList.add(light);
+                        for (TrafficLight l : trafficLightController.findDoubleLight(light)) {
+                            if (trafficLightList.contains(l))
+                                continue;
+                            trafficLightList.add(l);
+                        }
                     }
                 }
             }
@@ -94,6 +101,9 @@ public class GreenLightScheduler {
         }
     };
 
+    /**
+     * Resets this specific scheduler
+     */
     public void resetScheduler(){
         greenLightArr.clear();
     }
@@ -111,6 +121,10 @@ public class GreenLightScheduler {
         trafficLightList.removeAll(lightsToExclude);
     }
 
+    /**
+     * @param light is the light where the points will be given to
+     * @return the amount of points(time) that will be added to the waiting time to increase the pickrate of that light by the timertask
+     */
     public int calculatePriorityPoints(TrafficLight light) {
         int priorityPoints = 0;
 
@@ -123,6 +137,10 @@ public class GreenLightScheduler {
         return priorityPoints;
     }
 
+    /**
+     * @param lights are the lights where other available lights will be added to, those sensors of the lights have to be in a high state and should not be in the excluded group of those lights
+     * @param light is the light that has the possibillity to be added to the lights array.
+     */
     public void addAvailableLight(List<TrafficLight> lights, TrafficLight light) {
         if (lights.contains(light))
             return;
@@ -132,7 +150,7 @@ public class GreenLightScheduler {
                 TrafficLight groupLight = trafficLightController.getTrafficLights().get(i);
                 if (groupLight.getGroupId().equals(l.getGroupId()) && groupLight.getGroup().equals(l.getGroup()) && groupLight.getId().equals(l.getId())) {
 
-                    if (trafficLightController.getGroups().get(i).contains(light))
+                    if (trafficLightController.getExcludedGroups().get(i).contains(light))
                         return;
 
                     if (trafficLightController.getBridgeGroup().contains(light)) {
@@ -144,6 +162,10 @@ public class GreenLightScheduler {
         trafficController.addLight(light, lights);
     }
 
+    /**
+     * @param lightTimes A list of waiting times of the lights
+     * @return the light with the highest priority or waiting time
+     */
     public TrafficLight findPriorityLight(List<Long> lightTimes) {
         List<TrafficLight> priorityGroups = new ArrayList<>();
         Long longestWaitingTime = trafficController.getMax(lightTimes);
