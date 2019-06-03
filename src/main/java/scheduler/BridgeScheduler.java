@@ -160,16 +160,7 @@ public class BridgeScheduler {
 
             bridgeCounter++;
 
-<<<<<<< HEAD
             if(bridgeCounter < 50)
-=======
-            if(bridgeCounter != 60)
-                return;
-
-            List<TrafficLight> tempTrafficLightList = new ArrayList<>();
-            tempTrafficLightList.addAll(trafficLightList);
-            if (tempTrafficLightList.size() <= 0)
->>>>>>> 0b16586a4f2beae1db0d08fc08e659c3eedc17ec
                 return;
 
             for (TrafficSensor sensor : tempSensorList){

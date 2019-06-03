@@ -65,7 +65,6 @@ public class MqttController implements MqttCallback {
 			String publishMsg = "";
 			publishMessage(mainTopic + "/" + "features" + "/" + "lifecycle" + "/" + "controller/" + "onconnect", publishMsg);
 			trafficController.initState();
-			simulatorConnectionLost = false;
 	}
 
     public void publishMessage(String topic, String content) {
