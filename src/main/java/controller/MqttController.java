@@ -82,9 +82,8 @@ public class MqttController implements MqttCallback {
 	public void messageArrived(String topic, MqttMessage message) throws InterruptedException {
 		if (topic.contains("sensor")) {
 			sensorTopicRegex(topic, message.toString());
-
-			System.out.println("Mqtt topic : " + topic);
-			System.out.println("Mqtt msg : " + message.toString());
+//			System.out.println("Mqtt topic : " + topic);
+//			System.out.println("Mqtt msg : " + message.toString());
 		}
 		if (topic.contains("simulator/onconnect")) {
 			System.out.println("Mqtt topic : " + topic);
