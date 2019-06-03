@@ -89,6 +89,8 @@ public class BridgeScheduler {
                 vessels.clear();
                 bridgeCounter = 0;
                 closeCounter = 0;
+                bridgeOpenCounter = 0;
+                bridgeCloseCounter = 0;
                 return;
             }
             bridgeCloseCounter++;
@@ -100,7 +102,7 @@ public class BridgeScheduler {
         @Override
         public void run() {
 
-            if (!waitingVessel || !clearBridge)
+            if (!waitingVessel)
                 return;
 
             if (bridgeOpenCounter == 0) {
@@ -109,6 +111,9 @@ public class BridgeScheduler {
                 }
             }
 
+            if (!clearBridge){
+                return;
+            }
             if (bridgeOpenCounter == 2) {
                 trafficController.sendTrafficCommand(trafficLightController.getGateGroup().get(0), "1");
             }
@@ -155,22 +160,23 @@ public class BridgeScheduler {
 
             bridgeCounter++;
 
-            if(bridgeCounter != 50)
+            if(bridgeCounter < 50)
                 return;
 
-            List<TrafficLight> tempTrafficLightList = new ArrayList<>();
-            tempTrafficLightList.addAll(trafficLightList);
-            if (tempTrafficLightList.size() <= 0)
-                return;
-
-            for (TrafficLight light : tempTrafficLightList) {
-                if (light.getGroup().equals("vessel") && vessels.size() < 1) {
-                    vessels.add(light);
+            for (TrafficSensor sensor : tempSensorList){
+                if (sensor.getGroup().equals("vessel")){
+                    for (TrafficLight light : trafficLightController.getTrafficLights()) {
+                        if (sensor.getGroupId().equals(light.getGroupId()) && sensor.getGroup().equals(light.getGroup()) && light.getSensorIds().contains(sensor.getId())) {
+                            if (trafficLightList.contains(light) && vessels.size() < 1)
+                                vessels.add(light);
+                        }
+                    }
                 }
             }
-            waitingVessel = true;
-            bridgeOpenCounter = 0;
-            bridgeCloseCounter = 0;
+            if (vessels.size() > 0){
+                waitingVessel = true;
+            }
+
         }
     };
     public void resetScheduler(){
@@ -185,39 +191,4 @@ public class BridgeScheduler {
         bridgeCloseCounter = 0;
     }
 
-    public void addAvailableLight(List<TrafficLight> lights, TrafficLight light) {
-        if (lights.contains(light))
-            return;
-
-        for (TrafficLight l : lights) {
-            for (int i = 0; i < trafficLightController.getTrafficLights().size(); i++) {
-                TrafficLight groupLight = trafficLightController.getTrafficLights().get(i);
-                if (groupLight.getGroupId().equals(l.getGroupId()) && groupLight.getGroup().equals(l.getGroup()) && groupLight.getId().equals(l.getId())) {
-
-                    if (trafficLightController.getGroups().get(i).contains(light))
-                        return;
-
-                    if (trafficLightController.getBridgeGroup().contains(light)) {
-                        return;
-                    }
-                }
-            }
-        }
-
-        lights.add(light);
-    }
-
-    public TrafficLight findPriorityLight(List<Long> lightTimes) {
-        List<TrafficLight> priorityGroups = new ArrayList<>();
-        Long longestWaitingTime = trafficController.getMax(lightTimes);
-        for (int i = 0; i < lightTimes.size(); i++) {
-            Long time = lightTimes.get(i);
-            if (time == longestWaitingTime) {
-                priorityGroups.add(trafficLightList.get(i));
-            }
-        }
-        int randomInt = new Random().nextInt(priorityGroups.size());
-        TrafficLight priorityLight = priorityGroups.get(randomInt);
-        return priorityLight;
-    }
 }
